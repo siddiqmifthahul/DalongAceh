@@ -6,6 +6,7 @@ import { ATURAN_PORSI, batasiTamu, hitungPorsi, TAMU_MAKS, TAMU_MIN } from "../l
 import { useData } from "../state/data";
 import { useKeranjang } from "../state/keranjang";
 import { useToast } from "../state/toast";
+import { useMuncul } from "./useMuncul";
 
 /** Banner berbingkai emas (gaya "Online Reservation" di referensi) berisi kalkulator porsi kenduri. */
 export function Kalkulator() {
@@ -31,6 +32,7 @@ export function Kalkulator() {
     .map(r => ({ ...r, p: produk.find(x => x.id === r.produkId) })).filter(r => r.p);
   const total = rekomendasi.reduce((t, r) => t + r.p!.harga * r.jumlah, 0);
   const poBuka = Date.now() < Date.parse(pengaturan.poTutup);
+  const muncul = useMuncul<HTMLDivElement>(0.2);
 
   const masukkan = () => {
     let lengkap = true;
@@ -42,7 +44,7 @@ export function Kalkulator() {
   return (
     <section className="d-banner-wrap" id="kalkulator" aria-labelledby="kalk-title">
       <div className="wrap">
-        <div className="d-banner">
+        <div className="d-banner" ref={muncul}>
           <div className="d-banner-foto">
             <img src="/img/reuboh.jpg" alt="Hidangan khas Aceh tersaji untuk kenduri" width={960} height={1280} loading="lazy" style={{ objectPosition: "45% 40%" }} />
           </div>
@@ -95,7 +97,7 @@ export function Kalkulator() {
                   </div>
                 );
               }) : <p className="hint">Pilih minimal satu jenis pesanan.</p>}
-              <div className="d-ringkasan-total"><span>Perkiraan total untuk {tamu} tamu</span><strong>{rp(total)}</strong></div>
+              <div className="d-ringkasan-total"><span>Perkiraan total untuk {tamu} tamu</span><strong key={total} className="d-total-angka">{rp(total)}</strong></div>
             </div>
 
             <button className="d-btn-besar" type="button" disabled={!rekomendasi.length || !poBuka} onClick={masukkan}>

@@ -1,0 +1,138 @@
+/* =========================================================
+   GERAK "TENANG & ANGGUN" (Dalong Aceh)
+   Seperti masuk restoran yang tenang: gerakan pelan, berbobot, tidak ramai.
+   - Satu momen pembuka di hero (busur emas tergambar, foto "tersaji", teks naik seperti tirai).
+   - Hidangan Andalan "tersaji" dari tengah elips ke tempatnya masing-masing.
+   - Hover: piring berputar pelan, kilau emas di tombol.
+   Aturan: hanya transform / opacity / stroke (ringan di HP). Keadaan tersembunyi HANYA berlaku
+   jika <html class="gerak"> (diatur di main.tsx), jadi tanpa JS atau dengan "kurangi gerak"
+   semua konten tetap tampil diam.
+   ========================================================= */
+:root{--ease-anggun:cubic-bezier(.16,1,.3,1)}
+
+@keyframes naik{from{opacity:0;transform:translateY(24px)}}
+@keyframes muncul{from{opacity:0}}
+@keyframes gambar{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+@keyframes putar{to{transform:rotate(360deg)}}
+@keyframes ketupat{from{opacity:0;transform:translate(-50%,-50%) rotate(-135deg) scale(0)}to{opacity:1;transform:translate(-50%,-50%) rotate(45deg) scale(1)}}
+@keyframes sajikan-foto{from{opacity:0;transform:scale(.88)}}
+@keyframes mendekat{from{transform:scale(1.22)}}
+@keyframes tirai{from{opacity:0;transform:translateY(26px);clip-path:inset(0 0 100% 0)}to{opacity:1;transform:none;clip-path:inset(0 0 -25% 0)}}
+@keyframes garis{from{transform:scaleX(0)}}
+@keyframes pantul{0%{transform:scale(.3)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes sorot{from{transform:scale(1.14);color:var(--kunyit-gelap)}}
+@keyframes geser-kanan{from{opacity:0;transform:translateX(-18px)}}
+@keyframes judul-tengah{from{opacity:0;transform:translate(-50%,-46%) scale(.94)}}
+@keyframes sajikan{from{opacity:0;transform:translate(calc(-50% + var(--dx) * 10px),calc(-38% + var(--dy) * 6.8px)) scale(.35)}}
+
+/* ---------- hero: cincin dalong (titik emas berputar sangat pelan + busur emas) ---------- */
+.d-hero-art::before{content:none}
+.d-hero-cincin{position:absolute;inset:-44px;width:calc(100% + 88px);height:calc(100% + 88px);overflow:visible;pointer-events:none;
+  translate:calc(var(--px,0px) * -.5) calc(var(--py,0px) * -.5);transition:translate 1s var(--ease-anggun)}
+.d-hero-cincin circle{fill:none;stroke:var(--kunyit);transform-box:view-box;transform-origin:50% 50%}
+.d-hero-cincin-titik{stroke-width:.55;stroke-linecap:round;stroke-dasharray:0 6;opacity:.6}
+.d-hero-cincin-busur{stroke-width:.32;stroke-linecap:round;stroke-dasharray:40 100;transform:rotate(150deg)}
+.d-hero-foto{translate:var(--px,0px) var(--py,0px);transition:translate 1s var(--ease-anggun)}
+.d-hero-ketupat{translate:calc(var(--px,0px) * -.5) calc(var(--py,0px) * -.5);transition:translate 1s var(--ease-anggun)}
+
+/* rangkaian pembuka hero (sekali saat halaman dibuka) */
+.gerak .rise{animation:tirai 1.15s var(--ease-anggun) backwards}
+.gerak .rise.d1{animation-delay:.1s}
+.gerak .rise.d2{animation-delay:.24s}
+.gerak .rise.d3{animation-delay:.42s}
+.gerak .rise.d4{animation-delay:.58s}
+.gerak .rise.d5{animation-delay:.74s}
+.d-eyebrow::after{transform-origin:left}
+.gerak .d-eyebrow::after{animation:garis 1.3s var(--ease-anggun) .55s backwards}
+.gerak .d-hero-foto{animation:sajikan-foto 1.4s var(--ease-anggun) .25s backwards}
+.gerak .d-hero-foto img{animation:mendekat 2.8s var(--ease-anggun) .25s backwards}
+.gerak .d-hero-cincin-titik{animation:muncul 1.6s ease .4s backwards,putar 180s linear infinite}
+.gerak .d-hero-cincin-busur{animation:busur 1.7s var(--ease-anggun) .6s backwards}
+@keyframes busur{from{stroke-dashoffset:40}to{stroke-dashoffset:0}}
+.gerak .d-hero-ketupat{animation:ketupat .8s var(--ease-spring) 1.75s backwards}
+.d-gelombang-garis{stroke-dasharray:100}
+.gerak .d-gelombang-bawah .d-gelombang-garis{animation:gambar 2.2s var(--ease-anggun) .9s backwards}
+
+/* ---------- header: ringkas dan sedikit transparan saat digulir ---------- */
+.d-header{transition:background-color .5s var(--ease-anggun),box-shadow .5s var(--ease-anggun)}
+.d-header-inner{transition:height .45s var(--ease-anggun)}
+.d-header .d-logo{transform-origin:left center;transition:transform .45s var(--ease-anggun)}
+.d-header[data-gulung="true"]{background:rgba(110,20,20,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  box-shadow:0 1px 0 rgba(217,162,27,.55),0 16px 32px -20px rgba(31,26,23,.65)}
+.d-header[data-gulung="true"] .d-header-inner{height:62px}
+.d-header[data-gulung="true"] .d-logo{transform:scale(.9)}
+.gerak .d-cart-badge:not([data-empty="true"]){animation:pantul .55s var(--ease-spring)}
+
+/* ---------- hidangan andalan: tersaji dari tengah elips ---------- */
+.d-lingkar-garis ellipse{stroke-dasharray:100}
+.gerak .d-lingkar:not(.is-terlihat) .d-lingkar-garis ellipse{stroke-dashoffset:100}
+.gerak .d-lingkar:not(.is-terlihat) :is(.d-andalan-judul,.d-andalan-item,.d-ketupat){opacity:0}
+.gerak .d-lingkar.is-terlihat .d-andalan-judul{animation:naik 1s var(--ease-anggun) backwards}
+.gerak .d-lingkar.is-terlihat .d-andalan-item{animation:naik .9s var(--ease-anggun) var(--jeda,0ms) backwards}
+@media (min-width:1024px){
+  .gerak .d-lingkar.is-terlihat .d-lingkar-garis ellipse{animation:gambar 2.2s var(--ease-anggun) backwards}
+  .gerak .d-lingkar.is-terlihat .d-andalan-judul{animation:judul-tengah 1.3s var(--ease-anggun) .15s backwards}
+  .gerak .d-lingkar.is-terlihat .d-andalan-item{animation:sajikan 1.2s var(--ease-anggun) var(--jeda,0ms) backwards}
+  .gerak .d-lingkar.is-terlihat .d-ketupat{animation:ketupat .8s var(--ease-spring) 1.9s backwards}
+}
+/* hover: piring berputar pelan dan bercincin emas */
+.d-andalan-foto img{transition:transform 1.1s var(--ease-anggun),box-shadow .6s var(--ease-anggun)}
+@media (hover:hover){
+  .d-andalan-item:hover .d-andalan-foto img{transform:rotate(10deg) scale(1.05);
+    box-shadow:0 0 0 4px #fff,0 0 0 6px var(--kunyit),0 24px 40px -18px rgba(110,20,20,.65)}
+}
+
+/* ---------- menu ---------- */
+.d-menu-eyebrow::after{transform-origin:left;transition:transform 1.3s var(--ease-anggun) .35s}
+.gerak .d-menu-grid:not(.is-terlihat) .d-menu-eyebrow::after{transform:scaleX(0)}
+.gerak .d-menu-grid:not(.is-terlihat) :is(.d-pil,.d-menu-judul,.d-card:not(.skeleton)){opacity:0}
+.gerak .d-menu-grid.is-terlihat .d-pil{animation:geser-kanan .8s var(--ease-anggun) calc(var(--urut,0) * 90ms) backwards}
+.gerak .d-menu-grid.is-terlihat .d-menu-judul{animation:naik 1s var(--ease-anggun) .1s backwards}
+.gerak .d-menu-grid.is-terlihat .d-card:not(.skeleton){animation:naik .95s var(--ease-anggun) calc(.2s + var(--urut,0) * 90ms) backwards}
+.gerak .d-menu-grid.is-terlihat .d-card:not(.skeleton) .quota .bar span{animation:garis 1.5s var(--ease-anggun) calc(.55s + var(--urut,0) * 90ms) backwards}
+.quota .bar span{transform-origin:left}
+:is(.d-card-grid,.d-pil-daftar) > :nth-child(2){--urut:1}
+:is(.d-card-grid,.d-pil-daftar) > :nth-child(3){--urut:2}
+:is(.d-card-grid,.d-pil-daftar) > :nth-child(4){--urut:3}
+:is(.d-card-grid,.d-pil-daftar) > :nth-child(5){--urut:4}
+:is(.d-card-grid,.d-pil-daftar) > :nth-child(6){--urut:5}
+:is(.d-card-grid,.d-pil-daftar) > :nth-child(7){--urut:6}
+:is(.d-card-grid,.d-pil-daftar) > :nth-child(n+8){--urut:7}
+/* kartu: terangkat pelan, bingkai emas menyala, foto berputar seperti piring */
+.d-card{transition:transform .6s var(--ease-anggun),box-shadow .6s var(--ease-anggun),border-color .6s var(--ease-anggun)}
+.d-card-foto img{transition:transform 1.1s var(--ease-anggun)}
+.d-pil-foto img{transition:transform 1.1s var(--ease-anggun)}
+@media (hover:hover){
+  .d-card:not(.skeleton):hover{transform:translateY(-6px);border-color:var(--kunyit);
+    box-shadow:0 1px 2px rgba(31,26,23,.04),0 32px 52px -28px rgba(110,20,20,.55)}
+  .d-card:hover .d-card-foto img{transform:rotate(8deg) scale(1.07)}
+  .d-pil:hover .d-pil-foto img{transform:rotate(12deg) scale(1.08)}
+}
+
+/* ---------- kilau emas di tombol utama (saat diarahkan kursor) ---------- */
+:is(.d-btn-emas,.d-btn-keranjang,.d-btn-besar){position:relative;overflow:hidden}
+:is(.d-btn-emas,.d-btn-keranjang,.d-btn-besar)::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.6) 47%,rgba(255,255,255,.12) 55%,transparent 68%);transform:translateX(-115%)}
+.d-btn-besar::after{background:linear-gradient(105deg,transparent 30%,rgba(243,223,166,.35) 47%,rgba(243,223,166,.08) 55%,transparent 68%)}
+@media (hover:hover){
+  :is(.d-btn-emas,.d-btn-keranjang:not([disabled]),.d-btn-besar:not([disabled])):hover::after{transform:translateX(115%);transition:transform 1s var(--ease-anggun)}
+}
+
+/* ---------- hitung porsi ---------- */
+.d-banner-foto{overflow:hidden}
+.gerak .d-banner:not(.is-terlihat){opacity:0}
+.gerak .d-banner.is-terlihat{animation:naik 1.1s var(--ease-anggun) backwards}
+.gerak .d-banner.is-terlihat .d-banner-foto img{animation:mendekat 2.6s var(--ease-anggun) backwards}
+.d-total-angka{display:inline-block}
+.gerak .d-total-angka{animation:sorot .7s var(--ease-anggun)}
+
+/* ---------- cara pesan ---------- */
+.gerak .steps:not(.is-terlihat) .step{opacity:0}
+.gerak .steps.is-terlihat .step{animation:naik .9s var(--ease-anggun) backwards}
+.gerak .steps.is-terlihat .step:nth-child(2){animation-delay:.15s}
+.gerak .steps.is-terlihat .step:nth-child(3){animation-delay:.3s}
+
+/* ---------- footer: garis emas tumbuh dari tengah ---------- */
+.d-footer-copy::before{transform-origin:right;transition:transform 1.5s var(--ease-anggun)}
+.d-footer-copy::after{transform-origin:left;transition:transform 1.5s var(--ease-anggun)}
+.gerak .d-footer-copy:not(.is-terlihat)::before,.gerak .d-footer-copy:not(.is-terlihat)::after{transform:scaleX(0)}

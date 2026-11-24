@@ -4,6 +4,7 @@ import { rp } from "../lib/format";
 import { kodeValid, rapikanKode } from "../lib/kode";
 import { STATUS, type RingkasanPesanan } from "../lib/types";
 import { useData } from "../state/data";
+import { useMuncul } from "./useMuncul";
 
 function CekPesanan() {
   const { sumber } = useData();
@@ -65,6 +66,7 @@ function CekPesanan() {
 
 export function CaraPesan() {
   const { pengaturan } = useData();
+  const muncul = useMuncul<HTMLOListElement>(0.2);
   return (
     <section className="section" id="cara-pesan" aria-labelledby="cara-title">
       <div className="wrap">
@@ -72,7 +74,7 @@ export function CaraPesan() {
           <h2 id="cara-title">Cara pesan</h2>
           <p>Mau cepat? Ketuk tombol WhatsApp di produk mana saja. Mau pasti kebagian kuota? Pesan lewat keranjang.</p>
         </div>
-        <ol className="steps">
+        <ol className="steps" ref={muncul}>
           <li className="step"><span className="step-num" aria-hidden="true">1</span><h3>Pilih produk dan jumlahnya</h3><p>Sisa kuota terlihat di setiap produk, jadi Anda tahu masih kebagian atau tidak.</p></li>
           <li className="step"><span className="step-num" aria-hidden="true">2</span><h3>Pilih jam ambil</h3><p>Datang sesuai jam yang dipilih. Pesanan sudah ditimbang dan dibungkus.</p></li>
           <li className="step"><span className="step-num" aria-hidden="true">3</span><h3>Kirim lewat WhatsApp, lalu bayar DP</h3><p>Pesan sudah tersusun rapi dengan kode pesanan. {pengaturan.namaUsaha} akan membalas dengan info DP.</p></li>

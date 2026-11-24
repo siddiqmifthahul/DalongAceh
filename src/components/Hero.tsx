@@ -1,8 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon";
 import { Gelombang } from "./Gelombang";
 import { useData } from "../state/data";
 import { sisaWaktu, tanggalPanjang } from "../lib/format";
+import { geserParalaks } from "../lib/gerak";
+
+/** Foto hero bergeser halus mengikuti kursor (hanya mouse/trackpad, dan hanya jika gerak diizinkan). */
+function useParalaks<T extends HTMLElement>() {
+  const area = useRef<T>(null);
+  useEffect(() => {
+    const el = area.current;
+    if (!el || !document.documentElement.classList.contains("gerak") || !window.matchMedia("(pointer: fine)").matches) return;
+    let bingkai = 0;
+    const gerak = (e: PointerEvent) => {
+      cancelAnimationFrame(bingkai);
+      bingkai = requestAnimationFrame(() => {
+        const r = el.getBoundingClientRect();
+        const { dx, dy } = geserParalaks(e.clientX - r.left, e.clientY - r.top, r.width, r.height, 10);
+        el.style.setProperty("--px", dx + "px");
+        el.style.setProperty("--py", dy + "px");
+      });
+    };
+    const diam = () => { cancelAnimationFrame(bingkai); el.style.setProperty("--px", "0px"); el.style.setProperty("--py", "0px"); };
+    el.addEventListener("pointermove", gerak);
+    el.addEventListener("pointerleave", diam);
+    return () => { cancelAnimationFrame(bingkai); el.removeEventListener("pointermove", gerak); el.removeEventListener("pointerleave", diam); };
+  }, []);
+  return area;
+}
 
 export function Hero() {
   const { pengaturan } = useData();
@@ -12,9 +37,10 @@ export function Hero() {
     return () => window.clearInterval(t);
   }, []);
   const w = sisaWaktu(pengaturan.poTutup, sekarang);
+  const area = useParalaks<HTMLElement>();
 
   return (
-    <section className="d-hero on-dark" aria-labelledby="hero-title">
+    <section className="d-hero on-dark" aria-labelledby="hero-title" ref={area}>
       <div className="d-hero-motif" aria-hidden="true" />
       <div className="wrap d-hero-inner">
         <div className="d-hero-teks">
@@ -36,8 +62,11 @@ export function Hero() {
             <a className="d-btn d-btn-garis" href="#kalkulator">Hitung Porsi <Icon name="panah" /></a>
           </div>
         </div>
-        <figure className="d-hero-art rise d3">
-          <span className="d-hero-busur" aria-hidden="true" />
+        <figure className="d-hero-art">
+          <svg className="d-hero-cincin" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+            <circle className="d-hero-cincin-titik" cx="50" cy="50" r="49" pathLength="360" />
+            <circle className="d-hero-cincin-busur" cx="50" cy="50" r="45" pathLength="100" />
+          </svg>
           <span className="d-hero-ketupat" aria-hidden="true" />
           <div className="d-hero-foto">
             <img src="/img/beulangong.jpg" alt="Kuah beulangong dimasak dalam kuali besar untuk kenduri Aceh"

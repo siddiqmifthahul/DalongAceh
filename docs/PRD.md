@@ -379,6 +379,12 @@ Mengikuti referensi **restoran mewah**, tetap dengan palet di atas:
 - **Hitung Porsi** dalam banner berbingkai emas.
 - **Footer** merah bergelombang dengan garis emas.
 - Ornamen budaya: belah ketupat emas, motif **Pintu Aceh** samar di hero, pita **pucok reubong**.
+- **Gerak "tenang dan anggun"** (bagian dari M18): busur emas tergambar dan foto hero "tersaji" saat halaman dibuka;
+  cincin titik emas berputar sangat pelan; foto hero bergeser halus mengikuti kursor; Hidangan Andalan keluar dari tengah
+  elips ke tempatnya; kartu, pil, dan langkah muncul bertahap saat digulir; header menyusut saat digulir; piring berputar
+  dan kilau emas di tombol saat diarahkan kursor; angka keranjang memantul saat bertambah. Hanya memakai CSS + JS bawaan
+  (tanpa library), hanya `transform`/`opacity`/`stroke` agar ringan di HP, dan **mati otomatis** jika pengguna memilih
+  "kurangi gerak" di perangkatnya (konten tetap tampil).
 
 ---
 

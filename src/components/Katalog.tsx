@@ -7,6 +7,7 @@ import { KATEGORI, type Kategori, type Produk } from "../lib/types";
 import { useData } from "../state/data";
 import { useKeranjang } from "../state/keranjang";
 import { useToast } from "../state/toast";
+import { useMuncul } from "./useMuncul";
 
 type PilihanKategori = Kategori | "semua";
 const URUTAN_KATEGORI: PilihanKategori[] = ["semua", "daging", "masakan", "kue"];
@@ -26,6 +27,7 @@ export function Katalog() {
   const [urutan, setUrutan] = useState<Urutan>("default");
   const [sheet, setSheet] = useState(false);
   const q = useDeferredValue(filter.q);
+  const muncul = useMuncul<HTMLDivElement>(0.05);
 
   const hasil = useMemo(() => saringProduk(produk, { ...filter, q }, urutan), [produk, filter, q, urutan]);
   const aktif = jumlahFilterAktif(filter);
@@ -48,7 +50,7 @@ export function Katalog() {
 
   return (
     <section className="d-menu" id="produk" aria-labelledby="produk-title">
-      <div className="wrap d-menu-grid">
+      <div className="wrap d-menu-grid" ref={muncul}>
         <aside className="d-menu-kiri">
           <p className="d-menu-eyebrow">Menu Kami</p>
           <div className="d-pil-daftar" role="group" aria-label="Kategori">

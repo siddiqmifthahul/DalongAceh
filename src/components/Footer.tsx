@@ -5,6 +5,7 @@ import { Gelombang } from "./Gelombang";
 import { NAV } from "./Header";
 import { useData } from "../state/data";
 import { formatWA, waUrl } from "../lib/whatsapp";
+import { useMuncul } from "./useMuncul";
 
 const KREDIT = [
   ["Meat_Vendor_in_Banda_Aceh_During_Meugang.jpg", "Pedagang daging saat Meugang di Banda Aceh", "Si Gam, CC BY-SA 4.0"],
@@ -20,6 +21,7 @@ const KREDIT = [
 
 export function Footer() {
   const { pengaturan } = useData();
+  const muncul = useMuncul<HTMLParagraphElement>(0.5);
   const wa = waUrl(pengaturan.noWhatsApp, "Assalamu'alaikum, saya mau tanya soal pesanan Meugang.");
   return (
     <footer className="d-footer on-dark">
@@ -49,7 +51,7 @@ export function Footer() {
             ))}
           </ul>
         </details>
-        <p className="d-footer-copy"><span>© 2026 {pengaturan.namaUsaha}. Website tugas program CHAT EKRAF.</span></p>
+        <p className="d-footer-copy" ref={muncul}><span>© 2026 {pengaturan.namaUsaha}. Website tugas program CHAT EKRAF.</span></p>
       </div>
     </footer>
   );

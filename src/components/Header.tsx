@@ -30,13 +30,26 @@ function useBagianAktif(ids: readonly string[]): string {
   return aktif;
 }
 
+/** true setelah halaman digulir sedikit: header menjadi lebih ringkas. */
+function useTergulung(batas = 24): boolean {
+  const [tergulung, setTergulung] = useState(false);
+  useEffect(() => {
+    const cek = () => setTergulung(window.scrollY > batas);
+    cek();
+    window.addEventListener("scroll", cek, { passive: true });
+    return () => window.removeEventListener("scroll", cek);
+  }, [batas]);
+  return tergulung;
+}
+
 export function Header() {
   const { jumlah, buka } = useKeranjang();
   const { pengaturan } = useData();
   const aktif = useBagianAktif(IDS);
+  const tergulung = useTergulung();
 
   return (
-    <header className="d-header on-dark">
+    <header className="d-header on-dark" data-gulung={tergulung}>
       <div className="wrap d-header-inner">
         <Link className="d-header-logo" to="/" aria-label={pengaturan.namaUsaha + ", ke beranda"}><Logo /></Link>
         <nav className="d-nav" aria-label="Navigasi utama">
@@ -47,7 +60,8 @@ export function Header() {
         <button className="d-cart-btn" type="button" onClick={buka} aria-haspopup="dialog" aria-controls="keranjang"
           aria-label={"Buka keranjang, " + jumlah + " item"}>
           <Icon name="troli" />
-          <span className="d-cart-badge" data-empty={jumlah === 0} aria-hidden="true">{jumlah}</span>
+          {/* key berganti saat jumlah berubah, sehingga animasi "memantul" diputar ulang */}
+          <span key={jumlah} className="d-cart-badge" data-empty={jumlah === 0} aria-hidden="true">{jumlah}</span>
         </button>
         <details className="d-mobile-menu">
           <summary className="d-icon-btn" aria-label="Buka menu"><Icon name="menu" /></summary>

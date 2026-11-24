@@ -6,6 +6,8 @@ import type { Produk } from "../lib/types";
 import { useData } from "../state/data";
 import { useKeranjang } from "../state/keranjang";
 import { useToast } from "../state/toast";
+import { jarakDariPusat, jedaBertahap } from "../lib/gerak";
+import { useMuncul } from "./useMuncul";
 
 /** Posisi 6 hidangan mengelilingi elips (persen dari kotak), searah jarum jam dari atas. */
 const POSISI = [
@@ -19,6 +21,7 @@ export function Andalan() {
   const toast = useToast();
   const daftar = [...produk].filter(p => p.aktif).sort((a, b) => a.urutan - b.urutan).slice(0, 6);
   const poBuka = Date.now() < Date.parse(pengaturan.poTutup);
+  const lingkar = useMuncul<HTMLDivElement>(0.25);
 
   const tambah = (p: Produk) => {
     const n = keranjang.tambah(p, 1);
@@ -30,9 +33,9 @@ export function Andalan() {
   return (
     <section id="andalan" className="d-andalan" aria-labelledby="andalan-title">
       <div className="wrap">
-        <div className="d-lingkar">
+        <div className="d-lingkar" ref={lingkar}>
           <svg className="d-lingkar-garis" viewBox="0 0 1000 700" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-            <ellipse cx="500" cy="350" rx="420" ry="300" />
+            <ellipse cx="500" cy="350" rx="420" ry="300" pathLength={100} />
           </svg>
           <span className="d-ketupat d-ketupat-kiri" aria-hidden="true" />
           <span className="d-ketupat d-ketupat-kanan" aria-hidden="true" />
@@ -42,8 +45,13 @@ export function Andalan() {
           <ul className="d-andalan-daftar">
             {daftar.map((p, i) => {
               const habis = sisa(p) <= 0;
+              const pusat = jarakDariPusat(POSISI[i]);
               return (
-                <li key={p.id} className="d-andalan-item" style={{ ["--x" as string]: POSISI[i].x + "%", ["--y" as string]: POSISI[i].y + "%" }}>
+                <li key={p.id} className="d-andalan-item" style={{
+                  ["--x" as string]: POSISI[i].x + "%", ["--y" as string]: POSISI[i].y + "%",
+                  ["--dx" as string]: pusat.dx, ["--dy" as string]: pusat.dy,
+                  ["--jeda" as string]: 600 + jedaBertahap(i, 130) + "ms"
+                }}>
                   <div className="d-andalan-foto">
                     <img src={fotoProduk(p)} alt={"Foto " + p.nama} width={160} height={160} loading="lazy" decoding="async" style={{ objectPosition: p.fokus }} />
                     {habis
