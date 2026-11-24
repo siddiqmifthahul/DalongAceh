@@ -163,7 +163,7 @@ a{color:var(--merah)}
 
 /* animasi pembuka: satu rangkaian saja */
 @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-.rise{opacity:0;animation:rise .8s var(--ease-out) forwards}
+.rise{animation:rise .8s var(--ease-out) both} /* tanpa opacity:0 bawaan: jika animasi tidak jalan, konten tetap terlihat */
 .rise.d1{animation-delay:.06s}.rise.d2{animation-delay:.16s}.rise.d3{animation-delay:.26s}.rise.d4{animation-delay:.36s}.rise.d5{animation-delay:.46s}
 
 /* =========================================================
@@ -238,30 +238,43 @@ legend{padding:0;margin-bottom:4px;font-weight:600;font-size:.95rem}
 .grid{display:grid;gap:16px;grid-template-columns:1fr}
 @media (min-width:420px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}}
 @media (min-width:768px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}}
-@media (min-width:1200px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 
-.card{display:flex;flex-direction:column;overflow:hidden;background:var(--putih);border:1px solid var(--pasir);border-radius:var(--r-md);box-shadow:var(--shadow-1)}
-.card-media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--pasir)}
+/* ---- kartu produk (mengikuti referensi: foto inset, pemisah berikon, isi rata tengah, tombol pil) ---- */
+.card{--c:var(--merah);--c-soft:rgba(142,27,27,.07);
+  container-type:inline-size;display:flex;flex-direction:column;padding:10px 10px 16px;text-align:center;
+  background:linear-gradient(180deg,var(--putih) 48%,var(--c-soft));border:1px solid #EFE4D2;border-radius:18px;
+  box-shadow:0 1px 2px rgba(31,26,23,.04),0 16px 36px -20px rgba(110,20,20,.30)}
+.card[data-kat="masakan"]{--c:#8A5E08;--c-soft:rgba(217,162,27,.12)}
+.card[data-kat="kue"]{--c:var(--hijau);--c-soft:rgba(47,107,58,.08)}
+.card-media{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:12px;background:var(--pasir)}
 .card-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.card-media::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.5), transparent 52%)}
-.card-media .tint{opacity:.10}
-.card-tag{position:absolute;left:10px;bottom:10px;z-index:2;padding:3px 10px;border-radius:999px;background:rgba(251,245,234,.95);font-size:.75rem;font-weight:600;line-height:1.5}
-.card-flag{position:absolute;right:10px;top:10px;z-index:2;padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:700;line-height:1.5}
+.card-media .tint{opacity:.06}
+.card-tag{position:absolute;right:8px;bottom:8px;z-index:2;padding:2px 9px;border-radius:999px;background:rgba(31,26,23,.62);color:var(--santan);font-size:.72rem;font-weight:600;line-height:1.6;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.card-flag{position:absolute;left:8px;top:8px;z-index:2;padding:2px 9px;border-radius:999px;font-size:.72rem;font-weight:700;line-height:1.6}
 .card-flag.out{background:var(--arang);color:var(--santan)}
 .card-flag.low{background:var(--kunyit);color:var(--arang)}
-.card-body{display:flex;flex-direction:column;gap:8px;flex:1;padding:14px 14px 16px}
-.card-title{margin:0;font-family:var(--font-display);font-weight:400;font-size:1.08rem;line-height:1.25}
-.card-desc{margin:0;font-size:.875rem;line-height:1.55;color:var(--rempah);display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.price{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 4px;margin-top:auto}
-.price strong{font-size:1.15rem;font-weight:700;color:var(--merah)}
+.card-body{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;padding:12px 6px 0}
+.card-divider{display:flex;align-items:center;gap:10px;width:100%;color:var(--c)}
+.card-divider::before,.card-divider::after{content:"";flex:1;height:1px;background:currentColor;opacity:.28}
+.card-divider svg{width:20px;height:20px;flex:none}
+.card-title{margin:2px 0 0;font-family:var(--font-display);font-weight:400;font-size:1.15rem;line-height:1.25;color:var(--c)}
+.card-ciri{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 0;margin:0;padding:0;list-style:none;font-size:.8rem;line-height:1.5;color:var(--rempah)}
+.card-ciri li+li::before{content:"•";margin:0 9px;color:var(--c);opacity:.55}
+.card-desc{margin:4px 0 0;max-width:32ch;font-size:.875rem;line-height:1.6;color:var(--arang);opacity:.82;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.price{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:2px 4px;margin-top:auto;padding-top:6px}
+.price strong{font-size:1.15rem;font-weight:700;color:var(--c)}
 .price span{font-size:.85rem;color:var(--rempah)}
 .quota .bar{height:6px;overflow:hidden;border-radius:99px;background:#F1E8D8}
 .quota .bar span{display:block;height:100%;border-radius:inherit;background:var(--hijau)}
 .quota.low .bar span{background:var(--kunyit)}
 .quota.out .bar span{background:#CDBFAA}
 .quota p{margin:6px 0 0;font-size:.8rem;line-height:1.4;color:var(--rempah)}
-.card-actions{display:grid;gap:8px;margin-top:4px}
-.card-actions .btn{font-size:.875rem;padding:8px 12px}
+.card .quota{width:100%;max-width:220px}
+.card-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;margin-top:10px}
+.card-actions .btn{min-height:44px;padding:8px 10px;border-radius:999px;font-size:.85rem}
+.btn-line{background:var(--putih);border-color:var(--c);color:var(--c)}
+.btn-line:hover:not([disabled]){background:var(--c-soft)}
+@container (max-width:259px){.card-actions{grid-template-columns:1fr}}
 
 .empty{padding:40px 24px;text-align:center;background:var(--putih);border:1.5px dashed var(--pasir);border-radius:var(--r-md)}
 .empty h3{margin:0 0 6px;font-family:var(--font-display);font-weight:400;font-size:1.3rem}
@@ -880,6 +893,11 @@ dialog.modal::backdrop{background:rgba(31,26,23,.52)}
         <p class="error" id="pe-desc" hidden></p>
       </div>
       <div class="form-field">
+        <label for="p-ciri">Ciri khas <span class="hint">(maks. 3, pisahkan dengan koma)</span></label>
+        <input class="input" id="p-ciri" maxlength="60" placeholder="Misalnya: Renyah, Manis, Hantaran" aria-describedby="pe-ciri">
+        <p class="error" id="pe-ciri" hidden></p>
+      </div>
+      <div class="form-field">
         <span class="form-label">Tersedia untuk momen</span>
         <div class="check-row">
           <label class="opt"><input type="checkbox" id="p-m-meugang">Meugang</label>
@@ -947,6 +965,7 @@ const SLOTS = [
   "Minggu, 7 Feb 2027, 05.30–07.30"
 ];
 const KAT = { daging: "Daging Meugang", masakan: "Masakan Kenduri", kue: "Kue Tradisional" };
+const KAT_ICON = { daging: "steak", masakan: "kuali", kue: "daun" };
 const PLACE = { daging: ["E9C9B4", "6E1414"], masakan: ["EBD9A8", "6B4A0E"], kue: ["D7E3C9", "245530"] };
 const MAX_PRODUK = 30;
 
@@ -993,6 +1012,14 @@ const FOTO = {
 };
 state.products.forEach(p => { const f = FOTO[p.id]; if (f) { p.foto = f[0]; p.fokus = f[1]; } });
 
+/* ciri khas singkat (maks. 3) yang tampil di kartu */
+const CIRI = {
+  sapi:["Segar","Lokal","Dipotong subuh"], kerbau:["Segar","Lokal","Favorit Meugang"], reuboh:["Gurih","Asam segar","Tahan lama"],
+  beulangong:["Berempah","Nangka muda","50 porsi"], kari:["Berempah","Gongseng","50 porsi"],
+  timphan:["Lembut","Manis","Daun pisang"], bhoi:["Renyah","Manis","Hantaran"], keukarah:["Renyah","Manis","Suguhan tamu"]
+};
+state.products.forEach(p => { p.ciri = CIRI[p.id] || []; });
+
 /* =========================================================
    UTILITAS (tanpa innerHTML)
    ========================================================= */
@@ -1035,6 +1062,8 @@ const ICONS = {
   logout:["M14 4h5v16h-5","M10 16.5 14.5 12 10 7.5","M14.5 12H3"],
   alert:["M12 8v5","M12 16.5h.01","M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"],
   store:["M4 9.5 5.5 4h13L20 9.5","M4 9.5h16v.5a3 3 0 0 1-5.3 1.9 3 3 0 0 1-5.4 0A3 3 0 0 1 4 10v-.5Z","M5.5 13v7h13v-7"],
+  steak:["M15 3a6 6 0 0 1 6 6c0 3.3-2.7 6-6 6-1.1 0-2.2-.3-3-.8L8.4 17.6","M15 3c-3.3 0-6 2.7-6 6 0 1.1.3 2.2.8 3l-3.4 3.6","M8.4 17.6a1.9 1.9 0 1 1-2.6 2.6 1.9 1.9 0 1 1-2-2 1.9 1.9 0 1 1 2.6-2.6","M13.5 6.5c1.5-.6 3.2 0 4 1.3"],
+  daun:["M4.5 19.5C4.5 11 10 5.5 19.5 4.5 18.5 14 13 19.5 4.5 19.5Z","M4.5 19.5 14 10","M9 15h4M11.5 12.5h3"],
   wa:["M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.4l-4.5 1.1Z","M9 8.6c.3 2.9 2.5 5.4 5.6 6.1l1.4-1.6-2-1.2-.9.9c-1-.5-1.9-1.4-2.4-2.4l.9-.9-1.2-2-1.4 1.1Z"]
 };
 function icon(name) {
@@ -1113,7 +1142,7 @@ function filtered() {
   const f = state.filters;
   const q = f.q.trim().toLowerCase();
   let list = state.products.filter(p => p.aktif)
-    .filter(p => !q || (p.nama + " " + p.desc).toLowerCase().includes(q))
+    .filter(p => !q || (p.nama + " " + p.desc + " " + (p.ciri || []).join(" ")).toLowerCase().includes(q))
     .filter(p => f.kat === "semua" || p.kat === f.kat)
     .filter(p => f.momen === "semua" || p.momen.includes(f.momen))
     .filter(p => !f.hideHabis || sisa(p) > 0)
@@ -1137,7 +1166,8 @@ function productCard(p, opts = {}) {
     : "Assalamu'alaikum, saya mau pesan " + p.nama + " (" + rp(p.harga) + "/" + p.satuan + ").\nApakah masih tersedia?";
   const inCart = state.cart.find(c => c.id === p.id);
   const full = inCart && inCart.qty >= s;
-  return h("article", { class: "card" },
+  const ciri = (p.ciri || []).slice(0, 3);
+  return h("article", { class: "card", "data-kat": p.kat },
     h("div", { class: "card-media" },
       h("img", { src: imgFor(p), alt: "Foto " + p.nama, width: 800, height: 600, loading: "lazy", decoding: "async", style: "object-position:" + (p.fokus || "50% 50%") }),
       h("span", { class: "tint" }),
@@ -1145,26 +1175,28 @@ function productCard(p, opts = {}) {
       habis ? h("span", { class: "card-flag out" }, "Habis") : low ? h("span", { class: "card-flag low" }, "Hampir habis") : null
     ),
     h("div", { class: "card-body" },
+      h("div", { class: "card-divider", "aria-hidden": "true" }, icon(KAT_ICON[p.kat] || "kuali")),
       h("h3", { class: "card-title" }, p.nama || "Nama produk"),
+      ciri.length ? h("ul", { class: "card-ciri", "aria-label": "Ciri khas" }, ...ciri.map(c => h("li", null, c))) : null,
       h("p", { class: "card-desc" }, p.desc || "Deskripsi singkat produk."),
       h("div", { class: "price" }, h("strong", null, rp(p.harga || 0)), h("span", null, "/" + p.satuan)),
       h("div", { class: "quota" + (habis ? " out" : low ? " low" : "") },
         h("div", { class: "bar", role: "presentation" }, h("span", { style: "width:" + pct + "%" })),
-        h("p", null, habis ? "Kuota untuk momen ini sudah habis" : "Sisa " + s + " " + p.satuan + " dari " + p.kuota)
+        h("p", null, habis ? "Kuota momen ini sudah habis" : "Sisa " + s + " " + p.satuan + " dari " + p.kuota)
       ),
       h("div", { class: "card-actions" },
         h("button", {
-          class: "btn btn-primary", type: "button",
+          class: "btn btn-line", type: "button",
           disabled: opts.preview || habis || full || !poOpen(),
           "aria-label": habis ? p.nama + " habis" : "Tambah " + p.nama + " ke keranjang",
           onclick: () => addToCart(p.id)
-        }, icon(habis ? "x" : "plus"), habis ? "Kuota habis" : full ? "Sudah maksimal" : "Tambah"),
+        }, icon(habis ? "x" : "plus"), habis ? "Habis" : full ? "Maksimal" : "Keranjang"),
         opts.preview
-          ? h("span", { class: "btn btn-wa", "aria-disabled": "true" }, icon("wa"), "Pesan via WA")
+          ? h("span", { class: "btn btn-wa", "aria-disabled": "true" }, icon("wa"), "Pesan WA")
           : h("a", {
               class: "btn btn-wa", href: waUrl(quickText), target: "_blank", rel: "noopener noreferrer",
               "aria-label": (habis ? "Tanya ketersediaan " : "Pesan ") + p.nama + " lewat WhatsApp"
-            }, icon("wa"), habis ? "Tanya ketersediaan" : "Pesan via WA")
+            }, icon("wa"), habis ? "Tanya stok" : "Pesan WA")
       )
     )
   );
@@ -1744,6 +1776,7 @@ function formProduct() {
     harga: Number($("#p-harga").value.replace(/\D/g, "")),
     kuota: Number($("#p-kuota").value.replace(/\D/g, "")),
     desc: $("#p-desc").value.trim().replace(/\s+/g, " "),
+    ciri: $("#p-ciri").value.split(",").map(s => s.trim().replace(/\s+/g, " ")).filter(Boolean),
     momen,
     aktif: $("#p-aktif").checked,
     terpesan: base ? base.terpesan : 0,
@@ -1758,20 +1791,21 @@ function renderPreview() {
   c.classList.toggle("over", n > 150);
   $("#p-preview").replaceChildren(productCard({ ...p, kuota: p.kuota || 1 }, { preview: true }));
 }
-["p-nama","p-kat","p-satuan","p-harga","p-kuota","p-desc","p-m-meugang","p-m-kenduri","p-aktif"].forEach(id => $("#" + id).addEventListener("input", renderPreview));
+["p-nama","p-kat","p-satuan","p-harga","p-kuota","p-desc","p-ciri","p-m-meugang","p-m-kenduri","p-aktif"].forEach(id => $("#" + id).addEventListener("input", renderPreview));
 ["p-kat","p-satuan","p-m-meugang","p-m-kenduri","p-aktif"].forEach(id => $("#" + id).addEventListener("change", renderPreview));
 
 function openProductDialog(id) {
   state.editingId = id;
   pendingFoto = null;
-  const p = id ? prod(id) : { nama:"", kat:"daging", satuan:"kg", harga:"", kuota:"", desc:"", momen:["meugang"], aktif:true };
+  const p = id ? prod(id) : { nama:"", kat:"daging", satuan:"kg", harga:"", kuota:"", desc:"", ciri:[], momen:["meugang"], aktif:true };
+  $("#p-ciri").value = (p.ciri || []).join(", ");
   $("#pd-title").textContent = id ? "Ubah produk" : "Tambah produk";
   $("#p-submit").textContent = id ? "Simpan perubahan" : "Simpan produk";
   $("#p-nama").value = p.nama; $("#p-kat").value = p.kat; $("#p-satuan").value = p.satuan;
   $("#p-harga").value = p.harga; $("#p-kuota").value = p.kuota; $("#p-desc").value = p.desc;
   $("#p-m-meugang").checked = p.momen.includes("meugang"); $("#p-m-kenduri").checked = p.momen.includes("kenduri");
   $("#p-aktif").checked = p.aktif; $("#p-foto").value = "";
-  ["nama","harga","kuota","desc","momen","foto"].forEach(k => setErr(k === "momen" ? null : "p-" + k, "pe-" + k, null));
+  ["nama","harga","kuota","desc","ciri","momen","foto"].forEach(k => setErr(k === "momen" ? null : "p-" + k, "pe-" + k, null));
   renderPreview();
   pd.showModal();
   $("#p-nama").focus();
@@ -1786,6 +1820,8 @@ function validateProduct(p) {
   else if (p.kuota < p.terpesan) e.kuota = "Kuota tidak boleh kurang dari yang sudah terpesan (" + p.terpesan + ").";
   if (p.desc.length < 10 || p.desc.length > 150) e.desc = "Deskripsi 10–150 karakter, sekitar 3 baris.";
   else if (/[<>]/.test(p.desc)) e.desc = "Deskripsi tidak boleh berisi tanda < atau >.";
+  if (p.ciri.length > 3) e.ciri = "Maksimal 3 ciri khas.";
+  else if (p.ciri.some(c => c.length > 16 || /[<>]/.test(c))) e.ciri = "Setiap ciri maksimal 16 karakter, tanpa tanda < atau >.";
   if (!p.momen.length) e.momen = "Pilih minimal satu momen.";
   if (!p.foto) e.foto = "Unggah foto produk supaya katalog tetap seragam.";
   if (!KAT[p.kat] || !["kg","paket","kotak"].includes(p.satuan)) e.nama = "Kategori atau satuan tidak valid.";
@@ -1800,10 +1836,11 @@ $("#product-form").addEventListener("submit", e => {
   setErr("p-harga", "pe-harga", err.harga);
   setErr("p-kuota", "pe-kuota", err.kuota);
   setErr("p-desc", "pe-desc", err.desc);
+  setErr("p-ciri", "pe-ciri", err.ciri);
   setErr(null, "pe-momen", err.momen);
   setErr("p-foto", "pe-foto", err.foto);
   const keys = Object.keys(err);
-  if (keys.length) { const f = { nama:"p-nama", harga:"p-harga", kuota:"p-kuota", desc:"p-desc", momen:"p-m-meugang", foto:"p-foto" }[keys[0]]; $("#" + f).focus(); return; }
+  if (keys.length) { const f = { nama:"p-nama", harga:"p-harga", kuota:"p-kuota", desc:"p-desc", ciri:"p-ciri", momen:"p-m-meugang", foto:"p-foto" }[keys[0]]; $("#" + f).focus(); return; }
   p.nama = p.nama.charAt(0).toUpperCase() + p.nama.slice(1);
   if (state.editingId) {
     Object.assign(prod(state.editingId), p);
