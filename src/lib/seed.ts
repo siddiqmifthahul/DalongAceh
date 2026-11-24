@@ -29,7 +29,7 @@ export const PRODUK_AWAL: Produk[] = [
 ];
 
 export const PENGATURAN_AWAL: Pengaturan = {
-  namaUsaha: "Dapur Mak Ti",
+  namaUsaha: "Dalong Aceh",
   noWhatsApp: "6282261451487",
   momenLabel: "Meugang Ramadan 2027",
   poTutup: "2027-02-05T18:00:00+07:00",

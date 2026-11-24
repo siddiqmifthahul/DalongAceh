@@ -15,8 +15,8 @@
     "cek:semua": "npm run typecheck && npm test && npm run cek:rahasia && npm audit --audit-level=high"
   },
   "dependencies": {
+    "@fontsource/playfair-display": "^5.3.0",
     "@fontsource/plus-jakarta-sans": "^5.3.0",
-    "@fontsource/young-serif": "^5.3.0",
     "@supabase/supabase-js": "^2.119.2",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",

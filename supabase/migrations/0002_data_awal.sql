@@ -1,6 +1,6 @@
 -- Data awal: pengaturan toko + 8 produk (harga & kuota = contoh, silakan diubah dari dasbor)
 insert into public.pengaturan (id, nama_usaha, no_whatsapp, momen_label, po_tutup, slots)
-values (1, 'Dapur Mak Ti', '6282261451487', 'Meugang Ramadan 2027', '2027-02-05 18:00:00+07',
+values (1, 'Dalong Aceh', '6282261451487', 'Meugang Ramadan 2027', '2027-02-05 18:00:00+07',
         array['Sabtu, 6 Feb 2027, 05.30–07.30', 'Sabtu, 6 Feb 2027, 07.30–09.30', 'Minggu, 7 Feb 2027, 05.30–07.30'])
 on conflict (id) do nothing;
 

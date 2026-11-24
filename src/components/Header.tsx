@@ -1,37 +1,59 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "./Icon";
+import { Logo } from "./Logo";
 import { useKeranjang } from "../state/keranjang";
 import { useData } from "../state/data";
 
-const NAV = [
-  ["#produk", "Produk"],
-  ["#kalkulator", "Hitung porsi"],
-  ["#cara-pesan", "Cara pesan"],
-  ["#cek-pesanan", "Cek pesanan"]
+export const NAV = [
+  ["top", "Beranda"],
+  ["andalan", "Andalan"],
+  ["produk", "Menu"],
+  ["kalkulator", "Hitung Porsi"],
+  ["cek-pesanan", "Cek Pesanan"]
 ] as const;
+const IDS = NAV.map(n => n[0]);
+
+/** Menandai menu yang sedang terlihat di layar (garis emas di bawah menu aktif). */
+function useBagianAktif(ids: readonly string[]): string {
+  const [aktif, setAktif] = useState(ids[0]);
+  useEffect(() => {
+    const els = ids.map(id => document.getElementById(id)).filter((e): e is HTMLElement => Boolean(e));
+    if (!("IntersectionObserver" in window) || !els.length) return;
+    const obs = new IntersectionObserver(entri => {
+      const terlihat = entri.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (terlihat) setAktif(terlihat.target.id);
+    }, { rootMargin: "-40% 0px -50% 0px", threshold: [0, 0.25, 0.5] });
+    els.forEach(e => obs.observe(e));
+    return () => obs.disconnect();
+  }, [ids]);
+  return aktif;
+}
 
 export function Header() {
   const { jumlah, buka } = useKeranjang();
   const { pengaturan } = useData();
+  const aktif = useBagianAktif(IDS);
+
   return (
-    <header className="site-header">
-      <div className="wrap header-inner">
-        <Link className="brand" to="/" aria-label={pengaturan.namaUsaha + ", ke beranda"}>
-          <span className="brand-mark"><Icon name="kuali" /></span>
-          <span><span className="brand-name">{pengaturan.namaUsaha}</span><span className="brand-sub">Meugang & kenduri, Banda Aceh</span></span>
-        </Link>
-        <nav className="main-nav" aria-label="Navigasi utama">
-          {NAV.map(([href, label]) => <a key={href} className="nav-link" href={href}>{label}</a>)}
+    <header className="d-header on-dark">
+      <div className="wrap d-header-inner">
+        <Link className="d-header-logo" to="/" aria-label={pengaturan.namaUsaha + ", ke beranda"}><Logo /></Link>
+        <nav className="d-nav" aria-label="Navigasi utama">
+          {NAV.map(([id, label]) => (
+            <a key={id} href={"#" + id} aria-current={aktif === id ? "location" : undefined}>{label}</a>
+          ))}
         </nav>
-        <button className="btn btn-outline" type="button" onClick={buka} aria-haspopup="dialog" aria-controls="keranjang">
-          <Icon name="bag" /><span className="cart-label">Keranjang</span>
-          <span className="count-badge" data-empty={jumlah === 0} aria-label={jumlah + " item di keranjang"}>{jumlah}</span>
+        <button className="d-cart-btn" type="button" onClick={buka} aria-haspopup="dialog" aria-controls="keranjang"
+          aria-label={"Buka keranjang, " + jumlah + " item"}>
+          <Icon name="troli" />
+          <span className="d-cart-badge" data-empty={jumlah === 0} aria-hidden="true">{jumlah}</span>
         </button>
-        <details className="mobile-menu">
-          <summary className="btn btn-outline btn-icon" aria-label="Buka menu"><Icon name="menu" /></summary>
-          <nav className="mobile-menu-panel" aria-label="Navigasi utama (seluler)">
-            {NAV.map(([href, label]) => (
-              <a key={href} href={href} onClick={e => (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open")}>{label}</a>
+        <details className="d-mobile-menu">
+          <summary className="d-icon-btn" aria-label="Buka menu"><Icon name="menu" /></summary>
+          <nav className="d-mobile-panel" aria-label="Navigasi utama (seluler)">
+            {NAV.map(([id, label]) => (
+              <a key={id} href={"#" + id} onClick={e => (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open")}>{label}</a>
             ))}
           </nav>
         </details>

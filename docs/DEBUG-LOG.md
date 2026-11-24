@@ -60,3 +60,9 @@ Diuji sebagai pengunjung tanpa login ke database produksi. Semua ditolak: baca p
 - **Penyebab:** fungsi dibuat di skema `public` (terekspos API) dengan hak eksekusi bawaan untuk semua role. Policy produk untuk pengunjung juga memanggil `is_admin()`, sehingga anon butuh hak eksekusi.
 - **Perbaikan:** migrasi `0003_pengamanan.sql`: `private.is_admin()`, policy dipecah (anon hanya `aktif`), `revoke execute` untuk fungsi trigger, `search_path` dikunci.
 - **Bukti:** Advisor 12 → 5 peringatan (4 disengaja untuk `buat_pesanan`/`cek_pesanan`, 1 fitur Pro). Uji penyusup 10/10 ditolak, katalog tetap 8 produk, dasbor penjual tetap berfungsi.
+
+### 11. Halaman melebar di HP setelah desain "Dalong Aceh"
+- **Gejala:** di layar 390px, bagian Menu lebih lebar dari layar. Kartu, kolom cari, dan tombol Filter terpotong ke kanan.
+- **Penyebab:** baris pil kategori (flex, bisa digulir horizontal) berada di dalam item grid `.d-menu-grid`. Item grid bawaannya `min-width:auto`, sehingga lebar total pil mendorong lebar kolom.
+- **Perbaikan:** `.d-menu-grid > *{min-width:0}`.
+- **Bukti:** screenshot 390px sesudah perbaikan, semua bagian muat. Pil tetap bisa digulir.

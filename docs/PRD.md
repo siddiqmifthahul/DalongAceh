@@ -37,7 +37,7 @@ sesuai syarat tugas EKRAF.
 - Katalog produk masih tersebar di status WhatsApp dan sulit dicari pembeli.
 - Pembeli tidak tahu apakah barang masih tersedia, dan bingung harus memesan berapa banyak untuk sekian tamu.
 
-**Profil UMKM contoh ✏️:** "Dapur Meugang Mak Ti", usaha keluarga di Banda Aceh yang menjual daging
+**Profil UMKM contoh ✏️:** "Dalong Aceh" (dalong = nampan berkaki untuk hidangan kenduri Aceh), usaha keluarga di Banda Aceh yang menjual daging
 Meugang, menerima pesanan masakan kenduri, dan membuat kue tradisional.
 
 ---
@@ -64,7 +64,7 @@ Memenuhi seluruh **Minimum Kerangka Prompt Project EKRAF** (bagian 4) dan **4 pi
 |---|---|---|
 | **Kak Nur, ibu rumah tangga, 30–45 th** | Pesan daging Meugang tanpa antre, pasti kebagian | **HP**, lewat link di WhatsApp/Instagram |
 | **Bang Rizal, panitia kenduri meunasah/kantor** | Tahu berapa banyak yang harus dipesan untuk 100–300 tamu | **HP dan laptop** kantor, membandingkan paket dan total harga |
-| **Mak Ti, pemilik UMKM** | Atur kuota, lihat semua pesanan, tahu total yang harus dimasak | **HP** sehari-hari, **laptop** untuk rekap; tidak paham teknis |
+| **Pemilik usaha (penjual)** | Atur kuota, lihat semua pesanan, tahu total yang harus dimasak | **HP** sehari-hari, **laptop** untuk rekap; tidak paham teknis |
 
 ---
 

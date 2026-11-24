@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Header } from "../components/Header";
 import { Hero } from "../components/Hero";
+import { Andalan } from "../components/Andalan";
 import { Katalog } from "../components/Katalog";
 import { Kalkulator } from "../components/Kalkulator";
 import { CaraPesan } from "../components/CaraPesan";
@@ -32,7 +33,7 @@ export function Home() {
       <Header />
       <main id="top">
         <Hero />
-        <div className="songket" role="presentation" />
+        <Andalan />
         <Katalog />
         <Kalkulator />
         <CaraPesan />

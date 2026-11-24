@@ -1,4 +1,8 @@
 import { Link } from "react-router-dom";
+import { Icon } from "./Icon";
+import { Logo } from "./Logo";
+import { Gelombang } from "./Gelombang";
+import { NAV } from "./Header";
 import { useData } from "../state/data";
 import { formatWA, waUrl } from "../lib/whatsapp";
 
@@ -18,29 +22,25 @@ export function Footer() {
   const { pengaturan } = useData();
   const wa = waUrl(pengaturan.noWhatsApp, "Assalamu'alaikum, saya mau tanya soal pesanan Meugang.");
   return (
-    <footer className="site-footer on-dark">
-      <div className="songket thin" role="presentation" />
-      <div className="wrap footer-inner">
-        <div>
-          <h2>{pengaturan.namaUsaha}</h2>
-          <p>Daging Meugang, masakan kenduri, dan kue tradisional Aceh.</p>
-          <p>Banda Aceh</p>
-        </div>
-        <div>
-          <h3>Jam buka</h3>
-          <p>Senin–Sabtu, 07.00–17.00 WIB</p>
-          <p>Hari Meugang mulai 05.30 WIB</p>
-        </div>
-        <div>
-          <h3>Hubungi</h3>
-          <ul className="footer-links">
-            {wa && <li><a href={wa} target="_blank" rel="noopener noreferrer">WhatsApp {formatWA(pengaturan.noWhatsApp)}</a></li>}
-            <li><Link to="/admin">Masuk dasbor penjual</Link></li>
-          </ul>
-        </div>
+    <footer className="d-footer on-dark">
+      <Gelombang posisi="atas" />
+      <div className="wrap d-footer-atas">
+        <Logo />
+        <nav className="d-footer-nav" aria-label="Navigasi bawah">
+          {NAV.map(([id, label]) => <a key={id} href={"#" + id}>{label}</a>)}
+        </nav>
+        {wa && (
+          <a className="d-footer-wa" href={wa} target="_blank" rel="noopener noreferrer" aria-label={"WhatsApp " + formatWA(pengaturan.noWhatsApp)}>
+            <Icon name="wa" />
+          </a>
+        )}
       </div>
-      <div className="wrap footer-note">
-        <p>Website tugas program CHAT EKRAF. Harga dan kuota dapat berubah sewaktu-waktu.</p>
+      <div className="wrap d-footer-info">
+        <p><strong>Jam buka</strong> Senin–Sabtu, 07.00–17.00 WIB, hari Meugang mulai 05.30 WIB</p>
+        {wa && <p><strong>WhatsApp</strong> <a href={wa} target="_blank" rel="noopener noreferrer">{formatWA(pengaturan.noWhatsApp)}</a></p>}
+        <p><strong>Lokasi</strong> Banda Aceh. <Link to="/admin">Masuk dasbor penjual</Link></p>
+      </div>
+      <div className="wrap">
         <details className="credits">
           <summary>Kredit foto (Wikimedia Commons)</summary>
           <ul>
@@ -49,6 +49,7 @@ export function Footer() {
             ))}
           </ul>
         </details>
+        <p className="d-footer-copy"><span>© 2026 {pengaturan.namaUsaha}. Website tugas program CHAT EKRAF.</span></p>
       </div>
     </footer>
   );

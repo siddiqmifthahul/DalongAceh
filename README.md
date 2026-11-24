@@ -1,4 +1,4 @@
-# Dapur Mak Ti: Pre-order Meugang & Kenduri
+# Dalong Aceh: Pre-order Meugang & Kenduri
 
 Website katalog dan pre-order untuk UMKM daging Meugang, masakan kenduri, dan kue tradisional Aceh.
 Dibuat untuk tugas program **CHAT EKRAF** dengan pendekatan *vibe coding*.

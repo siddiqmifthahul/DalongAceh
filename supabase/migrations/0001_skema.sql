@@ -1,5 +1,5 @@
 -- =====================================================================
--- Dapur Mak Ti: Pre-order Meugang & Kenduri
+-- Dalong Aceh: Pre-order Meugang & Kenduri
 -- Skema database + Row Level Security (RLS)
 -- Jalankan sekali di Supabase: SQL Editor > New query > tempel > Run
 -- =====================================================================

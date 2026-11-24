@@ -15,7 +15,7 @@ export function AdminTop({ masuk = false }: { masuk?: boolean }) {
       <div className="wrap admin-top-inner">
         <Link className="brand" to="/admin">
           <span className="brand-mark"><Icon name="kuali" /></span>
-          <span><span className="brand-name">Dasbor {pengaturan.namaUsaha.replace(/^Dapur\s+/i, "")}</span>
+          <span><span className="brand-name">Dasbor {pengaturan.namaUsaha}</span>
             <span className="brand-sub">{peran === "penjual" && email ? email : "Kelola pesanan Meugang"}</span></span>
         </Link>
         {peran === "demo" && <span className="demo-badge">Mode demo</span>}

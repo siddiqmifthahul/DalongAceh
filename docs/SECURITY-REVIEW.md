@@ -1,6 +1,6 @@
 # Security Review (OWASP Top 10: 2021)
 
-Proyek: **Dapur Mak Ti: Pre-order Meugang & Kenduri**
+Proyek: **Dalong Aceh: Pre-order Meugang & Kenduri**
 Tanggal review: 24 November 2026
 Lingkup: frontend (Vite + React + TypeScript), database Supabase (Postgres + RLS + Storage), hosting Vercel.
 

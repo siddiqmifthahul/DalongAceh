@@ -1,6 +1,6 @@
 # Panduan Keamanan untuk Pemilik Toko
 
-Ringkasan praktik aman dari materi CHAT EKRAF yang diterapkan di website **Dapur Mak Ti**.
+Ringkasan praktik aman dari materi CHAT EKRAF yang diterapkan di website **Dalong Aceh**.
 Bahasa sederhana, untuk dibaca pemilik usaha.
 
 ## 1. Kunci & password (materi *Vibe Coding UMKM*, slide 12 & 14)
