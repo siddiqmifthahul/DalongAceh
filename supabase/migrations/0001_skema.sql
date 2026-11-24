@@ -76,6 +76,17 @@ create table if not exists public.pesanan_item (
 create index if not exists pesanan_item_kode on public.pesanan_item (kode);
 
 -- =====================================================================
+-- HAK AKSES API (minimal). RLS di bawah tetap menyaring baris per baris.
+-- =====================================================================
+revoke all on public.admins, public.produk, public.pengaturan, public.pesanan, public.pesanan_item from anon, authenticated;
+grant select on public.produk, public.pengaturan to anon, authenticated;
+grant insert, update, delete on public.produk to authenticated;
+grant update on public.pengaturan to authenticated;
+grant select, update, delete on public.pesanan, public.pesanan_item to authenticated;
+grant select on public.admins to authenticated;
+grant execute on function public.is_admin() to anon, authenticated;
+
+-- =====================================================================
 -- ROW LEVEL SECURITY: semua tabel dikunci, lalu dibuka seperlunya
 -- =====================================================================
 alter table public.admins       enable row level security;
