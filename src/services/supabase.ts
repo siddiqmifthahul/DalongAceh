@@ -1,21 +1,12 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { kunciAman, urlSupabaseValid } from "../lib/kunci";
 
+/** Nilai diambil dari environment variable (Vercel / .env.local), bukan ditulis di kode. */
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const kunci = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
 /** Hanya kunci publik (anon/publishable) yang boleh ada di frontend. Kunci secret/service_role ditolak. */
-function kunciAman(k: string): boolean {
-  if (k.startsWith("sb_secret_")) return false;
-  if (k.split(".").length === 3) {
-    try {
-      const isi = JSON.parse(atob(k.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
-      if (isi.role === "service_role") return false;
-    } catch { /* bukan JWT yang bisa dibaca: biarkan Supabase yang menolak */ }
-  }
-  return true;
-}
-
-export const supabaseTersedia = Boolean(url && kunci && /^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(url) && kunciAman(kunci));
+export const supabaseTersedia = Boolean(url && kunci && urlSupabaseValid(url) && kunciAman(kunci));
 
 if (url && kunci && !supabaseTersedia) {
   console.error("[supabase] Konfigurasi tidak valid atau memakai kunci rahasia. Website berjalan di mode demo.");

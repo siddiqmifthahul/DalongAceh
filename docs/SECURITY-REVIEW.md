@@ -9,23 +9,40 @@ Format: **Risiko → Penerapan di proyek → Mitigasi → Status**
 ## Ringkasan arsitektur keamanan
 
 - **Pembeli** hanya bisa: membaca produk aktif dan pengaturan toko, membuat pesanan lewat fungsi `buat_pesanan`, dan mengecek pesanan lewat `cek_pesanan` (butuh kode + 4 digit terakhir no. HP). Pembeli **tidak bisa** membaca atau menulis tabel pesanan secara langsung.
-- **Penjual** login dengan Supabase Auth (email + password) dan harus terdaftar di tabel `admins`. Semua izin tulis dicek di database lewat Row Level Security (`is_admin()`), bukan hanya di frontend.
+- **Penjual** login dengan Supabase Auth (email + password) dan harus terdaftar di tabel `admins`. Semua izin tulis dicek di database lewat Row Level Security memakai `private.is_admin()` (skema `private` tidak terekspos ke API), bukan hanya di frontend.
 - **Mode demo `admin`/`admin`** (diwajibkan tugas) bekerja di salinan data **localStorage** browser pengunjung, sehingga tidak pernah menyentuh database asli.
 
 ## Tabel review
 
 | OWASP | Penerapan di proyek | Mitigasi | Status |
 |---|---|---|---|
-| **A01 Broken Access Control** | Dasbor penjual, CRUD produk, status pesanan | RLS aktif di semua tabel. Tulis produk/pengaturan/pesanan hanya jika `is_admin()`. Pembeli tidak punya policy SELECT/INSERT ke `pesanan` (hanya lewat fungsi `security definer` yang memvalidasi input). Storage: unggah/ubah/hapus foto hanya admin. Route `/admin/*` dijaga di frontend, dan penjagaan sesungguhnya ada di database. | ✅ Termitigasi |
-| **A02 Cryptographic Failures** | Login, data pembeli | HTTPS wajib (HSTS + `upgrade-insecure-requests`). Password dikelola Supabase Auth (di-hash di server). Tidak ada password yang disimpan di localStorage. Kunci di frontend hanya kunci **publishable/anon**; kode menolak kunci `service_role`/`sb_secret_`. | ✅ Termitigasi |
+| **A01 Broken Access Control** | Dasbor penjual, CRUD produk, status pesanan | RLS aktif di semua tabel. Tulis produk/pengaturan/pesanan hanya jika `private.is_admin()`. Pengunjung (anon) tidak memanggil fungsi apa pun di policy; fungsi trigger tidak bisa dipanggil lewat API. Pembeli tidak punya policy SELECT/INSERT ke `pesanan` (hanya lewat fungsi `security definer` yang memvalidasi input). Storage: unggah/ubah/hapus foto hanya admin. Route `/admin/*` dijaga di frontend, dan penjagaan sesungguhnya ada di database. | ✅ Termitigasi |
+| **A02 Cryptographic Failures** | Login, data pembeli | HTTPS wajib (HSTS + `upgrade-insecure-requests`). Password dikelola Supabase Auth (di-hash di server). Tidak ada password yang disimpan di localStorage. Kunci di frontend hanya kunci **publishable/anon** dari Environment Variables Vercel; kode menolak kunci `service_role`/`sb_secret_` (diuji di `kunci.test.ts`). `npm run cek:rahasia` + GitHub Push protection mencegah rahasia masuk repo. | ✅ Termitigasi |
 | **A03 Injection (XSS, SQL)** | Form pesanan, form produk, pencarian | React meng-escape semua teks. Tidak ada `dangerouslySetInnerHTML`/`innerHTML`/`eval`. Validasi panjang, format, dan karakter `<` `>` di frontend **dan** di constraint database. Query Supabase memakai parameter (tidak ada SQL yang dirangkai dari string). Teks WhatsApp memakai `encodeURIComponent`, nomor hanya angka. CSP ketat tanpa `unsafe-eval`. | ✅ Termitigasi |
 | **A04 Insecure Design** | Kuota & pre-order | Kuota dicek dan dikurangi **di server secara atomik** (`select … for update`) agar tidak terjadi overbooking. Jendela PO dan slot dicek di server. Anti-spam: maks. 5 pesanan per nomor per jam dan 60 pesanan per menit per toko. Status "Batal" mengembalikan kuota lewat trigger. | ✅ Termitigasi |
-| **A05 Security Misconfiguration** | Header HTTP, Supabase | `vercel.json`: CSP, HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy, COOP. Pendaftaran akun publik di Supabase **dimatikan** (hanya penjual yang dibuatkan akun). Bucket foto membatasi tipe (WebP/JPEG/PNG) dan ukuran (1 MB). | ✅ Termitigasi |
+| **A05 Security Misconfiguration** | Header HTTP, Supabase | `vercel.json`: CSP (koneksi & gambar **hanya** ke project Supabase toko ini, `style-src 'self'`), HSTS, CORP, X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy, COOP. Pendaftaran akun publik di Supabase **dimatikan** (hanya penjual yang dibuatkan akun). Bucket foto membatasi tipe (WebP/JPEG/PNG) dan ukuran (1 MB). | ✅ Termitigasi |
 | **A06 Vulnerable & Outdated Components** | Dependensi npm | Library seminimal mungkin (React, React Router, supabase-js, fontsource). `package-lock.json` di-commit. `npm audit`: **0 kerentanan** saat review. | ✅ Termitigasi |
-| **A07 Identification & Authentication Failures** | Login demo `admin`/`admin` | **Risiko diterima** karena diwajibkan tugas. Mitigasi: hanya membuka mode demo (data localStorage, bukan database), maks. 5 percobaan lalu terkunci 5 menit, sesi 30 menit di sessionStorage, label "Mode demo" jelas. Login penjual sungguhan memakai Supabase Auth dengan password kuat. | ⚠️ Diterima (demo) |
+| **A07 Identification & Authentication Failures** | Login demo `admin`/`admin` | **Risiko diterima** karena diwajibkan tugas. Mitigasi: hanya membuka mode demo (data localStorage, bukan database), maks. 5 percobaan lalu terkunci 5 menit, sesi 30 menit di sessionStorage, label "Mode demo" jelas. Login penjual sungguhan memakai Supabase Auth: **10 percobaan/5 menit per IP**, password **min. 12 karakter** + huruf besar/kecil/angka/simbol, *secure password change* & wajib password lama saat mengganti. Proteksi password bocor (HaveIBeenPwned) **hanya tersedia di paket Pro**, belum aktif. | ⚠️ Diterima (demo) |
 | **A08 Software & Data Integrity Failures** | localStorage, foto unggahan | Semua data localStorage **divalidasi skema setiap kali dibaca**. Jika rusak/diubah lewat DevTools, data kembali ke awal tanpa crash. Data dari server juga divalidasi. Foto: SVG ditolak, foto di-encode ulang lewat canvas (metadata EXIF/GPS terbuang). Tidak ada script dari CDN. Font di-bundle lewat npm. | ✅ Termitigasi |
 | **A09 Security Logging & Monitoring Failures** | Galat & debugging | Pesan galat ke pengguna disaring (detail teknis tidak ditampilkan). Log Supabase (Auth, API, Postgres) tersedia di dasbor Supabase. Bug dan perbaikannya dicatat di `docs/DEBUG-LOG.md`. Tidak ada data pribadi di console. | ✅ Termitigasi |
 | **A10 Server-Side Request Forgery** | — | Tidak ada fitur yang membuat server mengambil URL dari input pengguna. URL foto produk hanya boleh `/img/…` atau `https://` dan hanya ditulis oleh admin. | ✅ Tidak berlaku |
+
+## Temuan Supabase Security Advisor & tindak lanjut
+
+Sebelum: **0 error, 12 peringatan**. Setelah migrasi `0003_pengamanan.sql`: **0 error, 5 peringatan**.
+
+| Temuan | Tindakan | Status |
+|---|---|---|
+| `sentuh_updated_at`: search_path tidak dikunci | `set search_path = ''` | ✅ Selesai |
+| `is_admin()` bisa dipanggil publik & pengguna login | Dipindah ke `private.is_admin()` (tidak terekspos API), semua policy diperbarui | ✅ Selesai |
+| `atur_kuota_status()` (trigger) bisa dipanggil | `revoke execute` dari public/anon/authenticated | ✅ Selesai |
+| `rls_auto_enable()` (dibuat Supabase) bisa dipanggil | `revoke execute` | ✅ Selesai |
+| `buat_pesanan`, `cek_pesanan` bisa dipanggil publik (4 peringatan) | **Disengaja**: pembeli memesan & cek pesanan tanpa akun. Fungsi memvalidasi slot, PO, kuota (atomik), panjang & format input, anti-spam per nomor & per menit; `cek_pesanan` butuh kode + 4 digit no. HP dan tidak membocorkan nama/HP | ⚠️ Risiko diterima |
+| Leaked password protection nonaktif | Fitur Supabase **Pro** (berbayar). Diganti: min. 12 karakter + kombinasi wajib + batas 10 login/5 menit | ⚠️ Keterbatasan paket gratis |
+
+Uji penyusup ulang (tanpa login, ke database produksi) setelah migrasi: 10/10 ditolak
+(baca pesanan & item, ubah harga, ubah nomor WA, jadi admin, unggah foto, panggil `is_admin`, panggil trigger,
+pesanan dengan slot palsu, daftar akun baru). Katalog publik tetap terbaca (8 produk).
 
 ## Privasi data pembeli
 
@@ -46,6 +63,7 @@ Format: **Risiko → Penerapan di proyek → Mitigasi → Status**
 
 ## Risiko yang tersisa / rekomendasi lanjutan
 
-1. Tambahkan CAPTCHA (mis. Cloudflare Turnstile) di form pesanan jika ada spam nyata.
+1. **Penimbunan kuota**: penyerang bisa membuat pesanan palsu memakai banyak nomor HP berbeda. Mitigasi sekarang: penjual membatalkan pesanan mencurigakan (kuota kembali). Lanjutan: batal otomatis pesanan belum DP + batas per IP / CAPTCHA (Cloudflare Turnstile).
 2. Aktifkan MFA (TOTP) untuk akun penjual di Supabase.
 3. Hapus otomatis data pesanan lama (mis. 90 hari setelah momen) untuk mengurangi data pribadi yang tersimpan.
+4. Proteksi password bocor jika project di-upgrade ke paket Pro.

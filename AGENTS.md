@@ -103,8 +103,17 @@ Kredensial `admin`/`admin` **diwajibkan oleh tugas EKRAF**, jadi tetap ada, tapi
 - Jangan simpan password, token, atau rahasia apa pun di localStorage.
 - Data pribadi pembeli seminimal mungkin. Sediakan tombol "Hapus data saya".
 
+### Aturan untuk agen AI (dari materi CHAT)
+- **Selalu minta konfirmasi pemilik sebelum `git push`** atau mengubah pengaturan Supabase/Vercel/GitHub.
+- **Jangan pernah meminta, menerima, menyimpan, atau menuliskan** password, nomor rekening, PIN, kode OTP,
+  atau kunci `secret`/`service_role`. Jika pemilik menempelkannya ke chat, ingatkan untuk menggantinya.
+- Nomor rekening untuk DP **hanya dikirim penjual lewat WhatsApp**. Website tidak pernah meminta atau menyimpannya.
+- Jalankan `npm run cek:semua` (typecheck, test, pemindai rahasia, audit) sebelum commit.
+- Eksperimen di branch `coba/*` (otomatis menjadi Preview URL Vercel), bukan langsung di `main`.
+
 ### Rahasia
 - **Jangan pernah** menulis API key, token, nomor rekening, atau data sensitif di kode.
+- Konfigurasi Supabase dibaca dari **Environment Variables Vercel** (produksi) dan `.env.local` (komputer). Keduanya tidak masuk git.
 - Ingat: semua variabel `VITE_*` ikut terkirim ke browser dan bisa dibaca siapa pun.
   Yang boleh hanya kunci Supabase **publishable/anon** (memang publik, dilindungi RLS).
   Kunci **secret/service_role** TIDAK BOLEH ada di frontend, repo, atau env Vercel proyek ini.

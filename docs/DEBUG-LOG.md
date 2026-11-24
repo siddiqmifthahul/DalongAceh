@@ -54,3 +54,9 @@ Format setiap entri: **Gejala → Penyebab → Perbaikan → Bukti/commit**.
 
 ### 9. Uji keamanan database (bukan bug, hasil verifikasi)
 Diuji sebagai pengunjung tanpa login ke database produksi. Semua ditolak: baca pesanan/item, ubah harga, ubah nomor WhatsApp, menjadikan diri admin, unggah foto, pesanan dengan slot palsu, dan mendaftar akun baru.
+
+### 10. Security Advisor Supabase: 12 peringatan
+- **Gejala:** Security Advisor melaporkan fungsi `security definer` yang bisa dipanggil publik (`is_admin`, trigger `atur_kuota_status`, `rls_auto_enable`) dan `sentuh_updated_at` tanpa `search_path`.
+- **Penyebab:** fungsi dibuat di skema `public` (terekspos API) dengan hak eksekusi bawaan untuk semua role. Policy produk untuk pengunjung juga memanggil `is_admin()`, sehingga anon butuh hak eksekusi.
+- **Perbaikan:** migrasi `0003_pengamanan.sql`: `private.is_admin()`, policy dipecah (anon hanya `aktif`), `revoke execute` untuk fungsi trigger, `search_path` dikunci.
+- **Bukti:** Advisor 12 → 5 peringatan (4 disengaja untuk `buat_pesanan`/`cek_pesanan`, 1 fitur Pro). Uji penyusup 10/10 ditolak, katalog tetap 8 produk, dasbor penjual tetap berfungsi.

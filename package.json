@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "cek:rahasia": "node scripts/cek-rahasia.ts",
+    "cek:semua": "npm run typecheck && npm test && npm run cek:rahasia && npm audit --audit-level=high"
   },
   "dependencies": {
     "@fontsource/plus-jakarta-sans": "^5.3.0",
