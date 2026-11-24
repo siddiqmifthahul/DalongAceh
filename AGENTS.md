@@ -49,7 +49,12 @@ Ditambah **4 pilar katalog UMKM** dari materi (lihat PRD bagian 5):
 ## Teknologi
 
 - **Vite + React + TypeScript**, React Router, **Vitest**.
-- **Tanpa backend.** Semua data di **localStorage** (syarat tugas), sesi admin di **sessionStorage**.
+- **Database: Supabase** (Postgres + Row Level Security + Storage). Skema ada di `supabase/migrations/`.
+  Semua aturan penting (kuota, jendela PO, slot, hak admin) **wajib ditegakkan di database**, bukan hanya di frontend.
+- Dua sumber data dengan antarmuka sama (`src/services/types.ts`): `live.ts` (Supabase) dan `demo.ts` (localStorage).
+  Mode demo dipakai untuk login `admin`/`admin` dan otomatis dipakai jika Supabase belum dikonfigurasi.
+- Keranjang pembeli disimpan di **localStorage dengan validasi** (syarat tugas), sesi demo di **sessionStorage**.
+- Env: `VITE_SUPABASE_URL` dan `VITE_SUPABASE_ANON_KEY` (lihat `.env.example`).
 - Logika bisnis ditulis sebagai fungsi murni di `src/lib/` supaya mudah di-unit test.
 - Hosting: **Vercel** (paket Hobby). **Wajib** ada `vercel.json` berisi rewrite SPA **dan** header keamanan
   (lihat bagian Keamanan).
@@ -79,7 +84,9 @@ Pemilik proyek mewajibkan website ini **aman**. Keamanan adalah syarat setiap fi
 Fitur dianggap belum selesai jika melanggar salah satu aturan di bawah.
 
 ### Login admin demo (`admin`/`admin`)
-Kredensial `admin`/`admin` **diwajibkan oleh tugas EKRAF**, jadi tetap dipakai, tapi **wajib** dengan mitigasi:
+Penjual sungguhan login dengan **Supabase Auth** (email + password kuat) dan harus terdaftar di tabel `admins`.
+Kredensial `admin`/`admin` **diwajibkan oleh tugas EKRAF**, jadi tetap ada, tapi **hanya membuka mode demo**
+(salinan data di localStorage, tidak pernah menyentuh database asli) dan **wajib** dengan mitigasi:
 - Label **"MODE DEMO"** yang jelas di halaman login dan dashboard.
 - Maksimal **5 percobaan gagal**, lalu login terkunci **5 menit**.
 - Sesi di **sessionStorage** dengan masa berlaku **30 menit**, dan ada tombol keluar.
@@ -99,6 +106,8 @@ Kredensial `admin`/`admin` **diwajibkan oleh tugas EKRAF**, jadi tetap dipakai, 
 ### Rahasia
 - **Jangan pernah** menulis API key, token, nomor rekening, atau data sensitif di kode.
 - Ingat: semua variabel `VITE_*` ikut terkirim ke browser dan bisa dibaca siapa pun.
+  Yang boleh hanya kunci Supabase **publishable/anon** (memang publik, dilindungi RLS).
+  Kunci **secret/service_role** TIDAK BOLEH ada di frontend, repo, atau env Vercel proyek ini.
 
 ### Mencegah XSS & injeksi
 - **Dilarang** `dangerouslySetInnerHTML`, `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write`,
