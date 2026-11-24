@@ -181,7 +181,7 @@ a{color:var(--merah)}
 @media (min-width:1024px){.section{padding-block:var(--s9)}}
 .section-head h2{font-family:var(--font-display);font-weight:400;font-size:clamp(1.75rem,1.3rem + 1.7vw,2.6rem);line-height:1.15;letter-spacing:-.015em;margin:0 0 10px}
 .section-head h2::after{content:"";display:block;width:150px;height:16px;margin-top:14px;background:var(--ornamen) no-repeat left center}
-.katalog-bg{position:relative;isolation:isolate}
+.katalog-bg{position:relative} /* jangan pakai isolation di sini: panel filter (fixed) harus bisa tampil di atas backdrop */
 .katalog-bg::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:var(--motif-pintu);background-size:72px 72px;opacity:.07;
   -webkit-mask-image:linear-gradient(180deg,#000,transparent 45%);mask-image:linear-gradient(180deg,#000,transparent 45%)}
 .section-head p{margin:0;max-width:62ch;color:var(--rempah)}
@@ -210,18 +210,69 @@ a{color:var(--merah)}
 .chip[aria-pressed="true"]{background:var(--arang);border-color:var(--arang);color:var(--santan)}
 
 .katalog-layout{display:grid;gap:var(--s6)}
-@media (min-width:1024px){.katalog-layout{grid-template-columns:240px 1fr;align-items:start}}
+@media (min-width:1024px){.katalog-layout{grid-template-columns:272px 1fr;align-items:start}}
 
-.filter-panel{position:fixed;left:0;right:0;bottom:0;z-index:60;max-height:85vh;overflow:auto;background:var(--putih);border-radius:var(--r-lg) var(--r-lg) 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));box-shadow:var(--shadow-3);transform:translateY(105%);visibility:hidden;transition:transform .38s var(--ease-out),visibility 0s linear .38s}
+/* ---- panel filter: kepala arang + pita songket, badan kertas krem, rata kiri (sengaja beda dari kartu katalog) ---- */
+.filter-panel{position:fixed;left:0;right:0;bottom:0;z-index:60;max-height:88vh;overflow:auto;background:#F7EFE1;border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:var(--shadow-3);transform:translateY(105%);visibility:hidden;transition:transform .38s var(--ease-out),visibility 0s linear .38s}
 .filter-panel.open{transform:none;visibility:visible;transition:transform .38s var(--ease-out)}
-.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s3)}
-.sheet-head h3{margin:0;font-family:var(--font-display);font-weight:400;font-size:1.3rem}
-.sheet-grip{width:44px;height:5px;border-radius:3px;background:var(--pasir);margin:-6px auto 14px}
-.filter-apply{margin-top:var(--s2)}
+.filter-head{padding:12px 16px 14px;background:var(--arang);color:var(--santan)}
+.sheet-grip{width:44px;height:5px;border-radius:3px;background:rgba(251,245,234,.28);margin:0 auto 12px}
+.filter-head-row{display:flex;align-items:center;gap:8px}
+.filter-head-row > div{margin-right:auto;min-width:0}
+.filter-head h3{margin:0;font-family:var(--font-display);font-weight:400;font-size:1.3rem;line-height:1.2}
+.filter-status{margin:2px 0 0;font-size:.8rem;line-height:1.4;color:rgba(251,245,234,.68)}
+.filter-status[data-active="true"]{color:var(--kunyit)}
+.filter-reset{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:6px 12px;border-radius:8px;border:1px solid rgba(217,162,27,.55);background:transparent;color:var(--kunyit);font-weight:600;font-size:.85rem;cursor:pointer;transition:transform .25s var(--ease-spring)}
+.filter-reset svg{width:16px;height:16px}
+.filter-reset:hover:not([disabled]){background:rgba(217,162,27,.14)}
+.filter-reset:active:not([disabled]){transform:scale(.96)}
+.filter-reset[disabled]{opacity:.38;cursor:default}
+.filter-head .sheet-close{width:40px;min-height:40px;border:1px solid rgba(251,245,234,.35);border-radius:8px;color:var(--santan);background:transparent}
+.filter-head .sheet-close:hover{background:rgba(251,245,234,.1)}
+.filter-panel .songket.thin{height:14px;border-block-width:2px;background-size:22px 13px}
+.filter-body{padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.f-group{margin:0 0 16px;padding:0 0 16px;border-bottom:1px dashed #D9C6A2}
+.f-group:last-of-type{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.f-group > legend,.f-group > legend label{margin-bottom:10px;font-size:.8rem;font-weight:700;color:var(--rempah)}
+
+.momen-list{display:grid;gap:6px}
+.momen-opt{position:relative;display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:10px;min-height:50px;padding:7px 10px 7px 8px;border-radius:10px;border:1px solid transparent;cursor:pointer;transition:transform .2s var(--ease-spring)}
+.momen-opt input{position:absolute;opacity:0;pointer-events:none}
+.momen-opt:hover{background:rgba(255,255,255,.65)}
+.momen-opt:active{transform:scale(.98)}
+.momen-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:#EDE0C7;color:var(--rempah)}
+.momen-ic svg{width:18px;height:18px}
+.momen-txt{font-weight:600;font-size:.92rem;line-height:1.25}
+.momen-txt small{display:block;font-weight:400;font-size:.76rem;color:var(--rempah)}
+.momen-count{min-width:28px;height:24px;padding:0 8px;border-radius:6px;display:grid;place-items:center;background:#EDE0C7;color:var(--rempah);font-size:.78rem;font-weight:700}
+.momen-opt:has(input:checked){background:var(--putih);border-color:#E3CFA8;box-shadow:inset 3px 0 0 var(--merah),0 4px 12px -8px rgba(110,20,20,.4)}
+.momen-opt:has(input:checked) .momen-ic{background:var(--merah);color:var(--kunyit)}
+.momen-opt:has(input:checked) .momen-count{background:var(--kunyit);color:var(--arang)}
+.momen-opt:has(input:focus-visible){outline:3px solid var(--focus);outline-offset:2px}
+
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:50px;cursor:pointer}
+.switch-row strong{display:block;font-size:.92rem;font-weight:600;line-height:1.3}
+.switch-row small{display:block;margin-top:2px;font-size:.76rem;line-height:1.4;color:var(--rempah)}
+.switch-row input{-webkit-appearance:none;appearance:none;position:relative;flex:none;width:46px;height:26px;margin:0;border-radius:999px;background:#D6C6AA;cursor:pointer}
+.switch-row input::before{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--putih);box-shadow:0 1px 3px rgba(0,0,0,.28);transition:transform .28s var(--ease-spring)}
+.switch-row input:checked{background:var(--hijau)}
+.switch-row input:checked::before{transform:translateX(20px)}
+
+.price-out{display:block;margin-bottom:6px;font-family:var(--font-display);font-size:1.25rem;line-height:1.25;color:var(--merah);white-space:nowrap}
+.filter-panel .range{--fill:100%;-webkit-appearance:none;appearance:none;width:100%;height:30px;margin:0;background:transparent;cursor:pointer}
+.filter-panel .range::-webkit-slider-runnable-track{height:6px;border-radius:99px;background:linear-gradient(90deg,var(--merah) var(--fill),#DFCFB2 var(--fill))}
+.filter-panel .range::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;margin-top:-6px;border-radius:4px;background:var(--emas);border:2px solid var(--putih);box-shadow:0 0 0 1px rgba(138,94,8,.55),0 2px 6px rgba(0,0,0,.28);transform:rotate(45deg)}
+.filter-panel .range::-moz-range-track{height:6px;border-radius:99px;background:#DFCFB2}
+.filter-panel .range::-moz-range-progress{height:6px;border-radius:99px;background:var(--merah)}
+.filter-panel .range::-moz-range-thumb{width:16px;height:16px;border-radius:4px;background:var(--kunyit);border:2px solid var(--putih);box-shadow:0 0 0 1px rgba(138,94,8,.55),0 2px 6px rgba(0,0,0,.28);transform:rotate(45deg)}
+.range-ends{display:flex;justify-content:space-between;font-size:.76rem;color:var(--rempah)}
+.filter-apply{margin-top:var(--s3)}
 @media (min-width:1024px){
-  .filter-panel{position:sticky;top:92px;z-index:auto;max-height:none;overflow:visible;transform:none;visibility:visible;border:1px solid var(--pasir);border-radius:var(--r-md);box-shadow:var(--shadow-1);padding:20px;transition:none}
+  .filter-panel{position:sticky;top:92px;z-index:auto;max-height:none;overflow:hidden;transform:none;visibility:visible;border:1px solid #E3D2B4;border-radius:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 10px 24px -20px rgba(31,26,23,.45);transition:none}
+  .filter-head{padding:16px 16px 14px}
+  .filter-head h3{font-size:1.15rem;white-space:nowrap}
+  .filter-body{padding:18px 14px 16px}
   .sheet-grip,.sheet-close,.filter-apply{display:none !important}
-  .sheet-head h3{font-size:1.15rem}
 }
 fieldset{border:0;padding:0;margin:0 0 18px;min-width:0}
 legend{padding:0;margin-bottom:4px;font-weight:600;font-size:.95rem}
@@ -618,28 +669,51 @@ dialog.modal::backdrop{background:rgba(31,26,23,.52)}
 
         <div class="katalog-layout">
           <aside class="filter-panel" id="filter-panel" aria-labelledby="filter-title">
-            <div class="sheet-grip" aria-hidden="true"></div>
-            <div class="sheet-head">
-              <h3 id="filter-title">Filter</h3>
-              <button class="btn btn-text sheet-close" type="button" data-close-filter>Tutup</button>
+            <div class="filter-head on-dark">
+              <div class="sheet-grip" aria-hidden="true"></div>
+              <div class="filter-head-row">
+                <div>
+                  <h3 id="filter-title">Saring produk</h3>
+                  <p class="filter-status" id="filter-status" aria-live="polite">Belum ada filter</p>
+                </div>
+                <button class="filter-reset" type="button" id="reset-filter" disabled><span data-icon="reset"></span>Reset</button>
+                <button class="btn btn-icon sheet-close" type="button" data-close-filter aria-label="Tutup filter"><span data-icon="x"></span></button>
+              </div>
             </div>
-            <fieldset>
-              <legend>Momen</legend>
-              <label class="opt"><input type="radio" name="momen" value="semua" checked>Semua momen</label>
-              <label class="opt"><input type="radio" name="momen" value="meugang">Meugang</label>
-              <label class="opt"><input type="radio" name="momen" value="kenduri">Kenduri (Maulid, walimah)</label>
-            </fieldset>
-            <fieldset>
-              <legend>Ketersediaan</legend>
-              <label class="opt"><input type="checkbox" id="hide-habis">Sembunyikan yang habis</label>
-            </fieldset>
-            <fieldset>
-              <legend><label for="max-harga">Harga maksimal</label></legend>
-              <input class="range" id="max-harga" type="range" min="50000" max="3000000" step="50000" value="3000000">
-              <div class="range-value"><span>Rp 50.000</span><strong id="max-harga-out">Rp 3.000.000</strong></div>
-            </fieldset>
-            <button class="btn btn-outline btn-block" type="button" id="reset-filter">Reset filter</button>
-            <button class="btn btn-primary btn-block filter-apply" type="button" data-close-filter>Tampilkan hasil</button>
+            <div class="songket thin" role="presentation"></div>
+            <div class="filter-body">
+              <fieldset class="f-group">
+                <legend>Momen</legend>
+                <div class="momen-list">
+                  <label class="momen-opt"><input type="radio" name="momen" value="semua" checked>
+                    <span class="momen-ic"><span data-icon="calendar"></span></span>
+                    <span class="momen-txt">Semua momen</span>
+                    <span class="momen-count" data-momen-count="semua">0</span></label>
+                  <label class="momen-opt"><input type="radio" name="momen" value="meugang">
+                    <span class="momen-ic"><span data-icon="steak"></span></span>
+                    <span class="momen-txt">Meugang<small>Ramadan, Lebaran, Haji</small></span>
+                    <span class="momen-count" data-momen-count="meugang">0</span></label>
+                  <label class="momen-opt"><input type="radio" name="momen" value="kenduri">
+                    <span class="momen-ic"><span data-icon="kuali"></span></span>
+                    <span class="momen-txt">Kenduri<small>Maulid, walimah</small></span>
+                    <span class="momen-count" data-momen-count="kenduri">0</span></label>
+                </div>
+              </fieldset>
+              <fieldset class="f-group">
+                <legend>Ketersediaan</legend>
+                <label class="switch-row">
+                  <span><strong>Sembunyikan yang habis</strong><small>Hanya tampilkan yang masih bisa dipesan</small></span>
+                  <input type="checkbox" id="hide-habis" role="switch">
+                </label>
+              </fieldset>
+              <fieldset class="f-group">
+                <legend><label for="max-harga">Harga maksimal</label></legend>
+                <output class="price-out" id="max-harga-out" for="max-harga">Semua harga</output>
+                <input class="range" id="max-harga" type="range" min="50000" max="3000000" step="50000" value="3000000">
+                <div class="range-ends"><span>Rp 50 rb</span><span>Rp 3 jt</span></div>
+              </fieldset>
+              <button class="btn btn-primary btn-block filter-apply" type="button" data-close-filter>Tampilkan hasil</button>
+            </div>
           </aside>
 
           <div>
@@ -1062,7 +1136,8 @@ const ICONS = {
   logout:["M14 4h5v16h-5","M10 16.5 14.5 12 10 7.5","M14.5 12H3"],
   alert:["M12 8v5","M12 16.5h.01","M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"],
   store:["M4 9.5 5.5 4h13L20 9.5","M4 9.5h16v.5a3 3 0 0 1-5.3 1.9 3 3 0 0 1-5.4 0A3 3 0 0 1 4 10v-.5Z","M5.5 13v7h13v-7"],
-  steak:["M15 3a6 6 0 0 1 6 6c0 3.3-2.7 6-6 6-1.1 0-2.2-.3-3-.8L8.4 17.6","M15 3c-3.3 0-6 2.7-6 6 0 1.1.3 2.2.8 3l-3.4 3.6","M8.4 17.6a1.9 1.9 0 1 1-2.6 2.6 1.9 1.9 0 1 1-2-2 1.9 1.9 0 1 1 2.6-2.6","M13.5 6.5c1.5-.6 3.2 0 4 1.3"],
+  steak:["M3 6.5h11.5v8H5.5A2.5 2.5 0 0 1 3 12V6.5Z","M14.5 9.5h5.5a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-5.5","M6.5 9h.01"],
+  reset:["M4.5 12a7.5 7.5 0 1 0 2.2-5.3L4.5 9","M4.5 4.5V9H9"],
   daun:["M4.5 19.5C4.5 11 10 5.5 19.5 4.5 18.5 14 13 19.5 4.5 19.5Z","M4.5 19.5 14 10","M9 15h4M11.5 12.5h3"],
   wa:["M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.4l-4.5 1.1Z","M9 8.6c.3 2.9 2.5 5.4 5.6 6.1l1.4-1.6-2-1.2-.9.9c-1-.5-1.9-1.4-2.4-2.4l.9-.9-1.2-2-1.4 1.1Z"]
 };
@@ -1222,6 +1297,15 @@ function renderCatalog() {
   const fc = $("#filter-count");
   fc.textContent = active;
   fc.dataset.empty = String(active === 0);
+  const st = $("#filter-status");
+  st.textContent = active ? active + " filter aktif, " + list.length + " produk cocok" : "Belum ada filter";
+  st.dataset.active = String(active > 0);
+  $("#reset-filter").disabled = active === 0;
+  const aktif = state.products.filter(p => p.aktif);
+  $$("[data-momen-count]").forEach(el => {
+    const m = el.dataset.momenCount;
+    el.textContent = m === "semua" ? aktif.length : aktif.filter(p => p.momen.includes(m)).length;
+  });
   renderHeroStock();
 }
 
@@ -1232,8 +1316,14 @@ function resetFilters() {
   $$("input[name=momen]").forEach(r => { r.checked = r.value === "semua"; });
   $("#hide-habis").checked = false;
   $("#max-harga").value = 3000000;
-  $("#max-harga-out").textContent = rp(3000000);
+  syncHarga();
   renderCatalog();
+}
+function syncHarga() {
+  const r = $("#max-harga");
+  const v = Number(r.value), min = Number(r.min), max = Number(r.max);
+  r.style.setProperty("--fill", ((v - min) / (max - min) * 100) + "%");
+  $("#max-harga-out").textContent = v >= max ? "Semua harga" : "Hingga " + rp(v);
 }
 
 let qTimer;
@@ -1251,7 +1341,7 @@ $$("input[name=momen]").forEach(r => r.addEventListener("change", () => { state.
 $("#hide-habis").addEventListener("change", e => { state.filters.hideHabis = e.target.checked; renderCatalog(); });
 $("#max-harga").addEventListener("input", e => {
   state.filters.maxHarga = Number(e.target.value);
-  $("#max-harga-out").textContent = rp(state.filters.maxHarga);
+  syncHarga();
   renderCatalog();
 });
 $("#reset-filter").addEventListener("click", resetFilters);
