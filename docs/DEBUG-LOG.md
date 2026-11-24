@@ -45,3 +45,12 @@ Format setiap entri: **Gejala → Penyebab → Perbaikan → Bukti/commit**.
 - **Penyebab:** nomor dikirim dalam format database (62…), bukan format tampilan.
 - **Perbaikan:** `pesanLengkap()` memakai `formatWA()`, sehingga tampil `0812-0000-1111`. Test ditambah.
 - **Bukti:** `whatsapp.test.ts`.
+
+### 8. Layar "Pesanan tersimpan" muncul lagi setelah keranjang ditutup dengan Esc
+- **Gejala:** setelah pesanan berhasil, menutup keranjang dengan tombol Esc lalu membukanya lagi masih menampilkan layar sukses lama.
+- **Penyebab:** handler Esc memanggil `k.tutup()` (hanya menutup laci), bukan fungsi `tutup()` komponen yang juga mereset status sukses. Handler juga terkunci pada nilai lama (*stale closure*).
+- **Perbaikan:** handler Esc memanggil `tutupRef.current()`, sebuah ref yang selalu berisi fungsi `tutup` terbaru.
+- **Bukti:** ditemukan saat uji pesanan sungguhan ke Supabase dari localhost.
+
+### 9. Uji keamanan database (bukan bug, hasil verifikasi)
+Diuji sebagai pengunjung tanpa login ke database produksi. Semua ditolak: baca pesanan/item, ubah harga, ubah nomor WhatsApp, menjadikan diri admin, unggah foto, pesanan dengan slot palsu, dan mendaftar akun baru.

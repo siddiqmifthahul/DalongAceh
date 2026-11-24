@@ -32,23 +32,26 @@ export function Keranjang() {
   const antar = form.metode === "antar";
   const baris = k.items.map(i => ({ i, p: produk.find(x => x.id === i.produkId) })).filter(b => b.p);
 
+  const tutup = () => {
+    k.tutup();
+    if (sukses) { setSukses(null); setForm(FORM_AWAL); }
+  };
+  // Ref agar tombol Esc selalu memanggil versi "tutup" terbaru (yang juga mereset layar sukses)
+  const tutupRef = useRef(tutup);
+  tutupRef.current = tutup;
+
   useEffect(() => {
     if (k.terbuka) {
       fokusSebelum.current = document.activeElement as HTMLElement;
       document.getElementById("toko")?.setAttribute("inert", "");
       window.setTimeout(() => tombolTutup.current?.focus(), 60);
-      const esc = (e: KeyboardEvent) => e.key === "Escape" && k.tutup();
+      const esc = (e: KeyboardEvent) => { if (e.key === "Escape") tutupRef.current(); };
       window.addEventListener("keydown", esc);
       return () => window.removeEventListener("keydown", esc);
     }
     document.getElementById("toko")?.removeAttribute("inert");
     fokusSebelum.current?.focus?.();
-  }, [k.terbuka]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const tutup = () => {
-    k.tutup();
-    if (sukses) { setSukses(null); setForm(FORM_AWAL); }
-  };
+  }, [k.terbuka]);
 
   const ubah = (f: keyof FormPesanan, v: string) => setForm(s => ({ ...s, [f]: v }));
 
