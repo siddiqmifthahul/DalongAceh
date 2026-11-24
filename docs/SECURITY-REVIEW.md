@@ -40,8 +40,9 @@ Format: **Risiko → Penerapan di proyek → Mitigasi → Status**
 - [x] Tidak ada rahasia di kode. Kunci publishable Supabase memang publik dan dilindungi RLS.
 - [x] Tidak ada `innerHTML` / `dangerouslySetInnerHTML` / `eval`
 - [x] Data localStorage yang dirusak tidak membuat aplikasi crash (diuji di `storage.test.ts`)
-- [ ] securityheaders.com nilai A: dicek setelah deploy ke Vercel
-- [ ] Pendaftaran akun publik Supabase dimatikan: dicek setelah project dibuat
+- [x] Header keamanan aktif di produksi (CSP, HSTS, X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy, COOP), dicek dengan `curl -I https://pesan-meugang.vercel.app`
+- [x] Pendaftaran akun publik Supabase dimatikan (uji `signUp` hasilnya "Signups not allowed")
+- [x] Uji penyusup tanpa login ke database produksi: baca pesanan, ubah harga/WA, jadi admin, unggah foto, slot palsu. Semua ditolak.
 
 ## Risiko yang tersisa / rekomendasi lanjutan
 
