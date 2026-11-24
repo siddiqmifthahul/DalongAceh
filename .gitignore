@@ -11,4 +11,3 @@ Thumbs.db
 # Supabase CLI lokal
 supabase/.temp/
 coverage/
-!.env.production
