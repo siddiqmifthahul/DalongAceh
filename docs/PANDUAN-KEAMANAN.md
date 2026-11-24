@@ -46,7 +46,7 @@ Bahasa sederhana, untuk dibaca pemilik usaha.
 - [ ] Dicek di **HP** dan **laptop** (foto tidak terpotong, tombol mudah ditekan)
 - [ ] `npm run cek:semua` lulus (typecheck, unit test, pemindai rahasia, `npm audit`)
 - [ ] Login penjual dan mode demo `admin`/`admin` berfungsi
-- [ ] Header keamanan aktif: `curl -I https://pesan-meugang.vercel.app`
+- [ ] Header keamanan aktif: `curl -I https://dalong-aceh.vercel.app`
 
 ## 6. Perawatan rutin
 - **Buka website minimal seminggu sekali.** Supabase gratis menghentikan sementara (pause) project yang tidak

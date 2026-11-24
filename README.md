@@ -3,7 +3,7 @@
 Website katalog dan pre-order untuk UMKM daging Meugang, masakan kenduri, dan kue tradisional Aceh.
 Dibuat untuk tugas program **CHAT EKRAF** dengan pendekatan *vibe coding*.
 
-**Website:** https://pesan-meugang.vercel.app · **Dasbor:** https://pesan-meugang.vercel.app/admin/login (mode demo: `admin` / `admin`)
+**Website:** https://dalong-aceh.vercel.app · **Dasbor:** https://dalong-aceh.vercel.app/admin/login (mode demo: `admin` / `admin`)
 
 ## Fitur
 - Landing page dengan countdown penutupan PO

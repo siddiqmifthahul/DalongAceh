@@ -57,7 +57,7 @@ pesanan dengan slot palsu, daftar akun baru). Katalog publik tetap terbaca (8 pr
 - [x] Tidak ada rahasia di kode. Kunci publishable Supabase memang publik dan dilindungi RLS.
 - [x] Tidak ada `innerHTML` / `dangerouslySetInnerHTML` / `eval`
 - [x] Data localStorage yang dirusak tidak membuat aplikasi crash (diuji di `storage.test.ts`)
-- [x] Header keamanan aktif di produksi (CSP, HSTS, X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy, COOP), dicek dengan `curl -I https://pesan-meugang.vercel.app`
+- [x] Header keamanan aktif di produksi (CSP, HSTS, X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy, COOP), dicek dengan `curl -I https://dalong-aceh.vercel.app`
 - [x] Pendaftaran akun publik Supabase dimatikan (uji `signUp` hasilnya "Signups not allowed")
 - [x] Uji penyusup tanpa login ke database produksi: baca pesanan, ubah harga/WA, jadi admin, unggah foto, slot palsu. Semua ditolak.
 
